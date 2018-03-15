@@ -36,12 +36,26 @@ function methods.skip_whitespaces(self)
 end
 
 function methods.match_ident(self)
-  local position = self.position
-  local ident = ""
   local start, last = self.data:find("-?[_%a][_%a%d-]*", self.position)
-  if start then
-    self.position = last
+  if start == self.position then
+    self.position = last + 1
     return self.data:sub(start, last)
+  else
+    return nil
+  end
+end
+
+function methods.match_namespace_prefix(self)
+  local start, last
+
+  start, last = self.data:find("-?[_%a][_%a%d-]*|", self.position)
+  if start ~= self.position then
+    start, last = self.data:find("*|", self.position)
+  end
+
+  if start == self.position then
+    self.position = last + 1
+    return self.data:sub(start, last - 1)
   else
     return nil
   end
@@ -50,7 +64,7 @@ end
 function Source.new(data)
   local source = {
     data = data,
-    position = 0,
+    position = 1,
   }
   setmetatable(source, metatable)
   return source

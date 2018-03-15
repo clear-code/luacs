@@ -156,13 +156,23 @@ local function on(parser, name, ...)
 end
 
 local function type_selector(parser)
-  local element_name = parser.source:match_ident()
-  if element_name then
-    on(parser, "type_selector", element_name)
-    return true
-  else
+  local source = parser.source
+  local position = source.position
+  local namespace_prefix = source:match_namespace_prefix()
+  local element_name = source:match_ident()
+
+  if namespace_prefix and not element_name then
+    error("element name is missing: <" ..
+            source.data:sub(position, source.position) ..
+            ">")
+  end
+
+  if not element_name then
     return false
   end
+
+  on(parser, "type_selector", namespace_prefix, element_name)
+  return true
 end
 
 local function simple_selector_sequence(parser)
