@@ -11,38 +11,28 @@ function methods.peek(self)
   return self.data[self.position]
 end
 
-function methods.match(self, characters)
-  local character = self.data[self.position]
-  for _, value in ipairs(characters) do
-    if value == character then
-      self.position = self.position + 1
-      return value
-    end
-  end
-  return nil
+function methods.seek(self, position)
+  self.position = position
 end
 
-local whitespaces = {
-  " ",
-  "\t",
-  "\r",
-  "\n",
-  "\f",
-}
-function methods.skip_whitespaces(self)
-  while self:match(whitespaces) do
-  end
-  return true
-end
-
-function methods.match_ident(self)
-  local start, last = self.data:find("-?[_%a][_%a%d-]*", self.position)
+function methods.match(self, pattern)
+  local start, last = self.data:find(pattern, self.position)
   if start == self.position then
     self.position = last + 1
     return self.data:sub(start, last)
   else
     return nil
   end
+end
+
+function methods.skip_whitespaces(self)
+  while self:match("[ \t\r\n\f]") do
+  end
+  return true
+end
+
+function methods.match_ident(self)
+  return self:match("-?[_%a][_%a%d-]*")
 end
 
 function methods.match_namespace_prefix(self)

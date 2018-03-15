@@ -161,13 +161,8 @@ local function type_selector(parser)
   local namespace_prefix = source:match_namespace_prefix()
   local element_name = source:match_ident()
 
-  if namespace_prefix and not element_name then
-    error("element name is missing: <" ..
-            source.data:sub(position, source.position) ..
-            ">")
-  end
-
   if not element_name then
+    source:seek(position)
     return false
   end
 
@@ -175,12 +170,28 @@ local function type_selector(parser)
   return true
 end
 
-local function simple_selector_sequence(parser)
-  on(parser, "start_simple_selector_sequence")
-  if not type_selector(parser) then
+local function universal(parser)
+  local source = parser.source
+  local position = source.position
+  local namespace_prefix = source:match_namespace_prefix()
+  local asterisk = source:match("%*")
+
+  if not asterisk then
+    source:seek(position)
     return false
   end
+
+  on(parser, "universal", namespace_prefix)
   return true
+end
+
+local function simple_selector_sequence(parser)
+  on(parser, "start_simple_selector_sequence")
+  if type_selector(parser) or universal(parser) then
+    return true
+  else
+    return false
+  end
 end
 
 local function selector(parser)
@@ -199,7 +210,7 @@ local function selectors_group(parser)
   end
   while true do
     parser.source:skip_whitespaces()
-    if not parser.source:match({","}) then
+    if not parser.source:match(",") then
       return true
     end
     if not selector(parser) then
