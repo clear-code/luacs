@@ -1,0 +1,39 @@
+FROM centos:7
+
+RUN \
+  yum install -y epel-release
+RUN \
+  yum install -y  \
+    gcc \
+    libxml2 \
+    luajit \
+    luajit-devel \
+    luarocks \
+    make \
+    m4
+RUN \
+  luarocks install luaunit
+
+RUN \
+  systemd-machine-id-setup
+
+RUN \
+  useradd --user-group --create-home luacs
+
+COPY . /home/luacs/luacs
+WORKDIR /home/luacs/luacs
+
+RUN \
+  sed \
+    -e 's@url = .*@url = "file:///home/luacs/luacs/",@g' \
+    -e 's@dir = .*@@g' \
+    luacs.rockspec > \
+    luacs-$(grep VERSION luacs.lua | sed -e 's/.*"\(.*\)"/\1/g')-0.rockspec
+RUN luarocks install luacs-*.rockspec
+RUN rm -rf luacs.lua luacs
+
+USER luacs
+
+CMD \
+  test/run-test.lua && \
+  sample/parse-html-cqueues-thread.lua sample/sample.html

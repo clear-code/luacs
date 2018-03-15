@@ -1,0 +1,29 @@
+FROM centos:6
+
+RUN \
+  yum install -y epel-release
+RUN \
+  yum install -y \
+    gcc \
+    luajit \
+    luajit-devel \
+    luarocks \
+    make \
+    m4 \
+    unzip
+RUN \
+  mv /usr/lib/lua/5.1/* \
+     /usr/lib64/lua/5.1/ && \
+  luarocks install luaunit
+
+RUN \
+  useradd --user-group --create-home luacs
+
+COPY . /home/luacs/luacs
+RUN chown -R luacs:luacs ~luacs/luacs/*
+
+USER luacs
+WORKDIR /home/luacs/luacs
+
+CMD \
+  test/run-test.lua
