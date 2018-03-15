@@ -199,7 +199,7 @@ local function class(parser)
   local source = parser.source
   local position = source.position
 
-  if not source:match(".") then
+  if not source:match("%.") then
     return false
   end
 
@@ -213,10 +213,39 @@ local function class(parser)
   end
 end
 
+local function attribute(parser)
+  local source = parser.source
+  local position = source.position
+
+  if not source:match("%[") then
+    return false
+  end
+
+  source:skip_whitespaces()
+
+  local namespace_prefix = source:match_namespace_prefix()
+
+  local name = parser.source:match_ident()
+  if not name then
+    source:seek(position)
+    return false
+  end
+
+  source:skip_whitespaces()
+
+  if not source:match("%]") then
+    source:seek(position)
+    return false
+  end
+
+  on(parser, "attribute", namespace_prefix, name)
+  return true
+end
+
 local function simple_selector_sequence(parser)
   on(parser, "start_simple_selector_sequence")
   if type_selector(parser) or universal(parser) then
-    if hash(parser) or class(parser) then
+    if hash(parser) or class(parser) or attribute(parser) then
     end
     return true
   else
