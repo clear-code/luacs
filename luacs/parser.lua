@@ -195,10 +195,29 @@ local function hash(parser)
   end
 end
 
+local function class(parser)
+  local source = parser.source
+  local position = source.position
+
+  if not source:match(".") then
+    return false
+  end
+
+  local name = parser.source:match_ident()
+  if name then
+    on(parser, "class", name)
+    return true
+  else
+    source:seek(position)
+    return false
+  end
+end
+
 local function simple_selector_sequence(parser)
   on(parser, "start_simple_selector_sequence")
   if type_selector(parser) or universal(parser) then
-    hash(parser)
+    if hash(parser) or class(parser) then
+    end
     return true
   else
     return false

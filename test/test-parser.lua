@@ -34,6 +34,12 @@ function parse(selectors_group)
                    name = name,
     })
   end
+  listener.on_class = function(name)
+    table.insert(events, {
+                   event = "class",
+                   name = name,
+    })
+  end
   local parser = luacs.Parser.new(selectors_group, listener)
   local successed = parser:parse()
   return {successed, events}
@@ -115,6 +121,28 @@ function TestParser.test_type_selector_hash()
   )
 end
 
+function TestParser.test_type_selector_class()
+  luaunit.assertEquals(parse("p.content"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           {
+                             event = "class",
+                             name = "content",
+                           },
+                         },
+                       }
+  )
+end
+
 function TestParser.test_universal()
   luaunit.assertEquals(parse("*"),
                        {
@@ -180,6 +208,27 @@ function TestParser.test_universal_hash()
                            },
                            {
                              event = "hash",
+                             name = "content",
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_class()
+  luaunit.assertEquals(parse("*.content"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "class",
                              name = "content",
                            },
                          },
