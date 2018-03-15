@@ -28,6 +28,12 @@ function parse(selectors_group)
                    namespace_prefix = namespace_prefix,
     })
   end
+  listener.on_hash = function(name)
+    table.insert(events, {
+                   event = "hash",
+                   name = name,
+    })
+  end
   local parser = luacs.Parser.new(selectors_group, listener)
   local successed = parser:parse()
   return {successed, events}
@@ -87,6 +93,28 @@ function TestParser.test_type_selector_with_namespace_prefix_name()
   )
 end
 
+function TestParser.test_type_selector_hash()
+  luaunit.assertEquals(parse("p#content"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           {
+                             event = "hash",
+                             name = "content",
+                           },
+                         },
+                       }
+  )
+end
+
 function TestParser.test_universal()
   luaunit.assertEquals(parse("*"),
                        {
@@ -132,6 +160,27 @@ function TestParser.test_universal_with_namespace_prefix_name()
                            {
                              event = "universal",
                              namespace_prefix = "xhtml",
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_hash()
+  luaunit.assertEquals(parse("*#content"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "hash",
+                             name = "content",
                            },
                          },
                        }

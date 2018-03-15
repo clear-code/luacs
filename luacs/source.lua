@@ -51,6 +51,15 @@ function methods.match_namespace_prefix(self)
   end
 end
 
+function methods.match_hash(self)
+  matched = self:match("#[_%a%d-]+")
+  if matched then
+    return matched:sub(2)
+  else
+    return matched
+  end
+end
+
 function Source.new(data)
   local source = {
     data = data,

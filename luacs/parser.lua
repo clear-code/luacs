@@ -185,9 +185,20 @@ local function universal(parser)
   return true
 end
 
+local function hash(parser)
+  local name = parser.source:match_hash()
+  if name then
+    on(parser, "hash", name)
+    return true
+  else
+    return false
+  end
+end
+
 local function simple_selector_sequence(parser)
   on(parser, "start_simple_selector_sequence")
   if type_selector(parser) or universal(parser) then
+    hash(parser)
     return true
   else
     return false
