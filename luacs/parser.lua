@@ -233,6 +233,8 @@ local function attribute(parser)
 
   source:match_whitespaces()
 
+  -- TODO: support condition
+
   if not source:match("%]") then
     source:seek(position)
     return false
@@ -399,8 +401,30 @@ local function simple_selector_sequence(parser)
 end
 
 local function combinator(parser)
-  -- TODO: implement
-  return false
+  local source = parser.source
+  local position = source.position
+
+  local whitespaces = source:match_whitespaces()
+
+  if source:match("%+") then
+    source:match_whitespaces()
+    on(parser, "combinator", "+")
+    return "+"
+  elseif source:match(">") then
+    source:match_whitespaces()
+    on(parser, "combinator", ">")
+    return ">"
+  elseif source:match("~") then
+    source:match_whitespaces()
+    on(parser, "combinator", "~")
+    return "~"
+  elseif whitespaces then
+    on(parser, "combinator", " ")
+    return " "
+  else
+    source:seek(position)
+    return false
+  end
 end
 
 local function selector(parser)
@@ -410,11 +434,14 @@ local function selector(parser)
   end
 
   while true do
-    -- TODO: care space only combinator case
-    if not combinator(parser) then
+    local combinator_current = combinator(parser)
+    if not combinator_current then
       break
     end
     if not simple_selector_sequence(parser) then
+      if combinator_current == " " then
+        break
+      end
       return false
     end
   end

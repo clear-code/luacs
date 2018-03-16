@@ -81,6 +81,12 @@ function parse(selectors_group)
   listener.on_end_negation = function(name, expression)
     table.insert(events, "end_negation")
   end
+  listener.on_combinator = function(combinator)
+    table.insert(events, {
+                   event = "combinator",
+                   combinator = combinator,
+    })
+  end
   local parser = luacs.Parser.new(selectors_group, listener)
   local successed = parser:parse()
   return {successed, events}
@@ -686,6 +692,134 @@ function TestParser.test_type_selector_negation_pseudo()
   )
 end
 
+function TestParser.test_type_selector_combinator_plus()
+  luaunit.assertEquals(parse("body + p"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "body"
+                           },
+                           "end_simple_selector_sequence",
+                           {
+                             event = "combinator",
+                             combinator = "+",
+                           },
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p"
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_combinator_greater()
+  luaunit.assertEquals(parse("body > p"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "body"
+                           },
+                           "end_simple_selector_sequence",
+                           {
+                             event = "combinator",
+                             combinator = ">",
+                           },
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p"
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_combinator_tilde()
+  luaunit.assertEquals(parse("body ~ p"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "body"
+                           },
+                           "end_simple_selector_sequence",
+                           {
+                             event = "combinator",
+                             combinator = "~",
+                           },
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p"
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_combinator_whitespace()
+  luaunit.assertEquals(parse("body   p"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "body"
+                           },
+                           "end_simple_selector_sequence",
+                           {
+                             event = "combinator",
+                             combinator = " ",
+                           },
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p"
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
 function TestParser.test_universal()
   luaunit.assertEquals(parse("*"),
                        {
@@ -1255,6 +1389,130 @@ function TestParser.test_universal_negation_pseudo()
                              name = "checked",
                            },
                            "end_negation",
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_combinator_plus()
+  luaunit.assertEquals(parse("* + p"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           "end_simple_selector_sequence",
+                           {
+                             event = "combinator",
+                             combinator = "+",
+                           },
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p"
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_combinator_greater()
+  luaunit.assertEquals(parse("* > p"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           "end_simple_selector_sequence",
+                           {
+                             event = "combinator",
+                             combinator = ">",
+                           },
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p"
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_combinator_tilde()
+  luaunit.assertEquals(parse("* ~ p"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           "end_simple_selector_sequence",
+                           {
+                             event = "combinator",
+                             combinator = "~",
+                           },
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p"
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_combinator_whitespace()
+  luaunit.assertEquals(parse("*   p"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           "end_simple_selector_sequence",
+                           {
+                             event = "combinator",
+                             combinator = " ",
+                           },
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p"
+                           },
                            "end_simple_selector_sequence",
                            "end_selector",
                            "end_selectors_group",
