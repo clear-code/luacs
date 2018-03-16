@@ -90,16 +90,19 @@ function methods.match_dimension(self)
 end
 
 function methods.match_namespace_prefix(self)
-  local start, last
+  local position = self.position
 
-  start, last = self.data:find("-?[_%a][_%a%d-]*|", self.position)
-  if start ~= self.position then
-    start, last = self.data:find("*|", self.position)
+  if self:match("|") then
+    return ""
   end
 
-  if start == self.position then
-    self.position = last + 1
-    return self.data:sub(start, last - 1)
+  local prefix = self:match("-?[_%a][_%a%d-]*|")
+  if not prefix then
+    prefix = self:match("*|")
+  end
+
+  if prefix then
+    return prefix:sub(0, -2)
   else
     return nil
   end

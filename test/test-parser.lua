@@ -125,6 +125,24 @@ function TestParser.test_type_selector_with_namespace_prefix_name()
   )
 end
 
+function TestParser.test_type_selector_with_namespace_prefix_none()
+  luaunit.assertEquals(parse("|html"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = "",
+                             element_name = "html",
+                           },
+                         },
+                       }
+  )
+end
+
 function TestParser.test_type_selector_hash()
   luaunit.assertEquals(parse("p#content"),
                        {
@@ -483,6 +501,23 @@ function TestParser.test_universal_with_namespace_prefix_name()
                            {
                              event = "universal",
                              namespace_prefix = "xhtml",
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_with_namespace_prefix_none()
+  luaunit.assertEquals(parse("|*"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = "",
                            },
                          },
                        }
