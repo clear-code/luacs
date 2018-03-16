@@ -173,7 +173,7 @@ function TestParser.test_type_selector_attribute()
   )
 end
 
-function TestParser.test_type_selector_attribute()
+function TestParser.test_type_selector_attribute_with_namespace_prefix()
   luaunit.assertEquals(parse("p[ xml|lang ]"),
                        {
                          true,
@@ -311,7 +311,7 @@ function TestParser.test_universal_attribute()
   )
 end
 
-function TestParser.test_universal_attribute_namespace_prefix()
+function TestParser.test_universal_attribute_with_namespace_prefix()
   luaunit.assertEquals(parse("*[xml|lang]"),
                        {
                          true,
