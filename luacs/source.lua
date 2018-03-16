@@ -65,7 +65,7 @@ function methods.match_number(self)
   end
 
   if number then
-    return number
+    return tonumber(number)
   else
     self:seek(position)
     return false

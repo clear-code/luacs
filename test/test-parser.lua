@@ -260,7 +260,7 @@ function TestParser.test_type_selector_pseudo_class()
 end
 
 function TestParser.test_type_selector_functional_pseudo_plus()
-  luaunit.assertEquals(parse("p:not(+)"),
+  luaunit.assertEquals(parse("p:nth-child(+1)"),
                        {
                          true,
                          {
@@ -274,9 +274,10 @@ function TestParser.test_type_selector_functional_pseudo_plus()
                            },
                            {
                              event = "functional_pseudo",
-                             name = "not",
+                             name = "nth-child",
                              expression = {
                                {"plus"},
+                               {"number", 1},
                              },
                            },
                          },
@@ -285,7 +286,7 @@ function TestParser.test_type_selector_functional_pseudo_plus()
 end
 
 function TestParser.test_type_selector_functional_pseudo_minus()
-  luaunit.assertEquals(parse("p:not(-)"),
+  luaunit.assertEquals(parse("p:nth-child(-1)"),
                        {
                          true,
                          {
@@ -299,9 +300,10 @@ function TestParser.test_type_selector_functional_pseudo_minus()
                            },
                            {
                              event = "functional_pseudo",
-                             name = "not",
+                             name = "nth-child",
                              expression = {
                                {"minus"},
+                               {"number", 1},
                              },
                            },
                          },
@@ -310,7 +312,7 @@ function TestParser.test_type_selector_functional_pseudo_minus()
 end
 
 function TestParser.test_type_selector_functional_pseudo_dimension()
-  luaunit.assertEquals(parse("p:not(100px)"),
+  luaunit.assertEquals(parse("p:nth-child(2n)"),
                        {
                          true,
                          {
@@ -324,9 +326,9 @@ function TestParser.test_type_selector_functional_pseudo_dimension()
                            },
                            {
                              event = "functional_pseudo",
-                             name = "not",
+                             name = "nth-child",
                              expression = {
-                               {"dimension", "100px"},
+                               {"dimension", "2n"},
                              },
                            },
                          },
@@ -335,7 +337,7 @@ function TestParser.test_type_selector_functional_pseudo_dimension()
 end
 
 function TestParser.test_type_selector_functional_pseudo_number()
-  luaunit.assertEquals(parse("p:not(100)"),
+  luaunit.assertEquals(parse("p:nth-child(1)"),
                        {
                          true,
                          {
@@ -349,9 +351,9 @@ function TestParser.test_type_selector_functional_pseudo_number()
                            },
                            {
                              event = "functional_pseudo",
-                             name = "not",
+                             name = "nth-child",
                              expression = {
-                               {"number", "100"},
+                               {"number", 1},
                              },
                            },
                          },
@@ -360,7 +362,8 @@ function TestParser.test_type_selector_functional_pseudo_number()
 end
 
 function TestParser.test_type_selector_functional_pseudo_string_double_quote()
-  luaunit.assertEquals(parse("p:not(\"a\")"),
+  -- TODO: Invalid nth-child
+  luaunit.assertEquals(parse("p:nth-child(\"a\")"),
                        {
                          true,
                          {
@@ -374,7 +377,7 @@ function TestParser.test_type_selector_functional_pseudo_string_double_quote()
                            },
                            {
                              event = "functional_pseudo",
-                             name = "not",
+                             name = "nth-child",
                              expression = {
                                {"string", "a"},
                              },
@@ -385,7 +388,8 @@ function TestParser.test_type_selector_functional_pseudo_string_double_quote()
 end
 
 function TestParser.test_type_selector_functional_pseudo_string_single_quote()
-  luaunit.assertEquals(parse("p:not('a')"),
+  -- TODO: Invalid nth-child
+  luaunit.assertEquals(parse("p:nth-child('a')"),
                        {
                          true,
                          {
@@ -399,7 +403,7 @@ function TestParser.test_type_selector_functional_pseudo_string_single_quote()
                            },
                            {
                              event = "functional_pseudo",
-                             name = "not",
+                             name = "nth-child",
                              expression = {
                                {"string", "a"},
                              },
@@ -614,7 +618,7 @@ function TestParser.test_universal_pseudo_class()
 end
 
 function TestParser.test_universal_functional_pseudo_plus()
-  luaunit.assertEquals(parse("*:not(+)"),
+  luaunit.assertEquals(parse("*:nth-child(+1)"),
                        {
                          true,
                          {
@@ -627,9 +631,10 @@ function TestParser.test_universal_functional_pseudo_plus()
                            },
                            {
                              event = "functional_pseudo",
-                             name = "not",
+                             name = "nth-child",
                              expression = {
                                {"plus"},
+                               {"number", 1},
                              },
                            },
                          },
@@ -638,7 +643,7 @@ function TestParser.test_universal_functional_pseudo_plus()
 end
 
 function TestParser.test_universal_functional_pseudo_minus()
-  luaunit.assertEquals(parse("*:not(-)"),
+  luaunit.assertEquals(parse("*:nth-child(-1)"),
                        {
                          true,
                          {
@@ -651,9 +656,10 @@ function TestParser.test_universal_functional_pseudo_minus()
                            },
                            {
                              event = "functional_pseudo",
-                             name = "not",
+                             name = "nth-child",
                              expression = {
                                {"minus"},
+                               {"number", 1},
                              },
                            },
                          },
@@ -662,7 +668,7 @@ function TestParser.test_universal_functional_pseudo_minus()
 end
 
 function TestParser.test_universal_functional_pseudo_dimension()
-  luaunit.assertEquals(parse("*:not(100px)"),
+  luaunit.assertEquals(parse("*:nth-child(2n)"),
                        {
                          true,
                          {
@@ -675,9 +681,9 @@ function TestParser.test_universal_functional_pseudo_dimension()
                            },
                            {
                              event = "functional_pseudo",
-                             name = "not",
+                             name = "nth-child",
                              expression = {
-                               {"dimension", "100px"},
+                               {"dimension", "2n"},
                              },
                            },
                          },
@@ -686,7 +692,7 @@ function TestParser.test_universal_functional_pseudo_dimension()
 end
 
 function TestParser.test_universal_functional_pseudo_number()
-  luaunit.assertEquals(parse("*:not(100)"),
+  luaunit.assertEquals(parse("*:nth-child(1)"),
                        {
                          true,
                          {
@@ -699,9 +705,9 @@ function TestParser.test_universal_functional_pseudo_number()
                            },
                            {
                              event = "functional_pseudo",
-                             name = "not",
+                             name = "nth-child",
                              expression = {
-                               {"number", "100"},
+                               {"number", 1},
                              },
                            },
                          },
@@ -710,7 +716,8 @@ function TestParser.test_universal_functional_pseudo_number()
 end
 
 function TestParser.test_universal_functional_pseudo_string_double_quote()
-  luaunit.assertEquals(parse("*:not(\"a\")"),
+  -- TODO: Invalid nth-child
+  luaunit.assertEquals(parse("*:nth-child(\"a\")"),
                        {
                          true,
                          {
@@ -723,7 +730,7 @@ function TestParser.test_universal_functional_pseudo_string_double_quote()
                            },
                            {
                              event = "functional_pseudo",
-                             name = "not",
+                             name = "nth-child",
                              expression = {
                                {"string", "a"},
                              },
@@ -734,7 +741,8 @@ function TestParser.test_universal_functional_pseudo_string_double_quote()
 end
 
 function TestParser.test_universal_functional_pseudo_string_single_quote()
-  luaunit.assertEquals(parse("*:not('a')"),
+  -- TODO: Invalid nth-child
+  luaunit.assertEquals(parse("*:nth-child('a')"),
                        {
                          true,
                          {
@@ -747,7 +755,7 @@ function TestParser.test_universal_functional_pseudo_string_single_quote()
                            },
                            {
                              event = "functional_pseudo",
-                             name = "not",
+                             name = "nth-child",
                              expression = {
                                {"string", "a"},
                              },
