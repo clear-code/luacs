@@ -348,8 +348,28 @@ local function pseudo(parser)
 end
 
 local function negation(parser)
-  -- TODO: implement
-  return false
+  local source = parser.source
+  local position = source.position
+
+  if not source:match(":not%(") then
+    return false
+  end
+
+  on(parser, "start_negation")
+  source:match_whitespaces()
+  if type_selector(parser) then
+    source:match_whitespaces()
+    if source:match("%)") then
+      on(parser, "end_negation")
+      return true
+    else
+      source:seek(position)
+      return false
+    end
+  else
+    source:seek(position)
+    return false
+  end
 end
 
 local function simple_selector_sequence(parser)
@@ -359,7 +379,6 @@ local function simple_selector_sequence(parser)
     n_required = 0
   end
   local n_occurred = 0
-  -- TODO: test
   while hash(parser) or
           class(parser) or
           attribute(parser) or

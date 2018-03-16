@@ -66,6 +66,12 @@ function parse(selectors_group)
                    expression = expression,
     })
   end
+  listener.on_start_negation = function(name, expression)
+    table.insert(events, "start_negation")
+  end
+  listener.on_end_negation = function(name, expression)
+    table.insert(events, "end_negation")
+  end
   local parser = luacs.Parser.new(selectors_group, listener)
   local successed = parser:parse()
   return {successed, events}
@@ -456,6 +462,31 @@ function TestParser.test_type_selector_functional_pseudo_ident()
   )
 end
 
+function TestParser.test_type_selector_negation_type_selector()
+  luaunit.assertEquals(parse("p:not( span )"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           "start_negation",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "span",
+                           },
+                           "end_negation",
+                         },
+                       }
+  )
+end
+
 function TestParser.test_universal()
   luaunit.assertEquals(parse("*"),
                        {
@@ -819,6 +850,30 @@ function TestParser.test_universal_functional_pseudo_ident()
                                {"name", "ja"},
                              },
                            },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_negation_type_selector()
+  luaunit.assertEquals(parse("*:not( span )"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           "start_negation",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "span",
+                           },
+                           "end_negation",
                          },
                        }
   )
