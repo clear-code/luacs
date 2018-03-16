@@ -347,6 +347,11 @@ local function pseudo(parser)
   end
 end
 
+local function negation(parser)
+  -- TODO: implement
+  return false
+end
+
 local function simple_selector_sequence(parser)
   on(parser, "start_simple_selector_sequence")
   local n_required = 1
@@ -355,16 +360,35 @@ local function simple_selector_sequence(parser)
   end
   local n_occurred = 0
   -- TODO: test
-  while hash(parser) or class(parser) or attribute(parser) or pseudo(parser) do
+  while hash(parser) or
+          class(parser) or
+          attribute(parser) or
+          negation(parser) or
+          pseudo(parser) do
     n_occurred = n_occurred + 1
   end
   return n_occurred >= n_required
+end
+
+local function combinator(parser)
+  -- TODO: implement
+  return false
 end
 
 local function selector(parser)
   on(parser, "start_selector")
   if not simple_selector_sequence(parser) then
     return false
+  end
+
+  while true do
+    -- TODO: care space only combinator case
+    if not combinator(parser) then
+      break
+    end
+    if not simple_selector_sequence(parser) then
+      return false
+    end
   end
   return true
 end
