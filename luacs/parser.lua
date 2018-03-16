@@ -242,10 +242,39 @@ local function attribute(parser)
   return true
 end
 
+local function pseudo(parser)
+  local source = parser.source
+  local position = source.position
+
+  if not source:match(":") then
+    return false
+  end
+
+  local event_name
+  if source:match(":") then
+    event_name = "pseudo_element"
+  else
+    event_name = "pseudo_class"
+  end
+
+  local name = source:match_ident()
+  if name then
+    on(parser, event_name, name)
+    return true
+  else
+    if functional_pseudo(parser) then
+      return true
+    else
+      source:peek(position)
+      return false
+    end
+  end
+end
+
 local function simple_selector_sequence(parser)
   on(parser, "start_simple_selector_sequence")
   if type_selector(parser) or universal(parser) then
-    if hash(parser) or class(parser) or attribute(parser) then
+    if hash(parser) or class(parser) or attribute(parser) or pseudo(parser) then
     end
     return true
   else

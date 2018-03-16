@@ -47,6 +47,18 @@ function parse(selectors_group)
                    name = name,
     })
   end
+  listener.on_pseudo_element = function(name)
+    table.insert(events, {
+                   event = "pseudo_element",
+                   name = name,
+    })
+  end
+  listener.on_pseudo_class = function(name)
+    table.insert(events, {
+                   event = "pseudo_class",
+                   name = name,
+    })
+  end
   local parser = luacs.Parser.new(selectors_group, listener)
   local successed = parser:parse()
   return {successed, events}
@@ -196,6 +208,50 @@ function TestParser.test_type_selector_attribute_with_namespace_prefix()
   )
 end
 
+function TestParser.test_type_selector_pseudo_element()
+  luaunit.assertEquals(parse("p::before"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           {
+                             event = "pseudo_element",
+                             name = "before",
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_pseudo_class()
+  luaunit.assertEquals(parse("a:visited"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "a",
+                           },
+                           {
+                             event = "pseudo_class",
+                             name = "visited",
+                           },
+                         },
+                       }
+  )
+end
+
 function TestParser.test_universal()
   luaunit.assertEquals(parse("*"),
                        {
@@ -327,6 +383,48 @@ function TestParser.test_universal_attribute_with_namespace_prefix()
                              event = "attribute",
                              namespace_prefix = "xml",
                              name = "lang",
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_pseudo_element()
+  luaunit.assertEquals(parse("*::before"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "pseudo_element",
+                             name = "before",
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_pseudo_class()
+  luaunit.assertEquals(parse("*:visited"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "pseudo_class",
+                             name = "visited",
                            },
                          },
                        }
