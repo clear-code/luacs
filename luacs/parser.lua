@@ -360,7 +360,8 @@ local function negation(parser)
   if type_selector(parser) or
        universal(parser) or
        hash(parser) or
-       class(parser) then
+       class(parser) or
+       attribute(parser) then
     source:match_whitespaces()
     if source:match("%)") then
       on(parser, "end_negation")

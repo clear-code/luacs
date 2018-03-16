@@ -631,6 +631,34 @@ function TestParser.test_type_selector_negation_class()
   )
 end
 
+function TestParser.test_type_selector_negation_attribute()
+  luaunit.assertEquals(parse("p:not( [|class] )"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p"
+                           },
+                           "start_negation",
+                           {
+                             event = "attribute",
+                             namespace_prefix = "",
+                             name = "class",
+                           },
+                           "end_negation",
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
 function TestParser.test_universal()
   luaunit.assertEquals(parse("*"),
                        {
@@ -1145,6 +1173,33 @@ function TestParser.test_universal_negation_class()
                            {
                              event = "class",
                              name = "content",
+                           },
+                           "end_negation",
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_negation_attribute()
+  luaunit.assertEquals(parse("*:not( [|class] )"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           "start_negation",
+                           {
+                             event = "attribute",
+                             namespace_prefix = "",
+                             name = "class",
                            },
                            "end_negation",
                            "end_simple_selector_sequence",
