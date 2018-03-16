@@ -25,10 +25,8 @@ function methods.match(self, pattern)
   end
 end
 
-function methods.skip_whitespaces(self)
-  while self:match("[ \t\r\n\f]") do
-  end
-  return true
+function methods.match_whitespaces(self)
+  return self:match("[ \t\r\n\f]+")
 end
 
 function methods.match_ident(self)

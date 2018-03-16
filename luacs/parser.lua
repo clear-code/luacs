@@ -221,7 +221,7 @@ local function attribute(parser)
     return false
   end
 
-  source:skip_whitespaces()
+  source:match_whitespaces()
 
   local namespace_prefix = source:match_namespace_prefix()
 
@@ -231,7 +231,7 @@ local function attribute(parser)
     return false
   end
 
-  source:skip_whitespaces()
+  source:match_whitespaces()
 
   if not source:match("%]") then
     source:seek(position)
@@ -298,7 +298,7 @@ local function functional_pseudo(parser)
 
   local expression = {}
   while true do
-    source:skip_whitespaces()
+    source:match_whitespaces()
     if not expression_component(parser, expression) then
       break
     end
@@ -394,13 +394,13 @@ local function selector(parser)
 end
 
 local function selectors_group(parser)
-  parser.source:skip_whitespaces()
+  parser.source:match_whitespaces()
   on(parser, "start_selectors_group")
   if not selector(parser) then
     return false
   end
   while true do
-    parser.source:skip_whitespaces()
+    parser.source:match_whitespaces()
     if not parser.source:match(",") then
       break
     end
@@ -408,7 +408,7 @@ local function selectors_group(parser)
       return false
     end
   end
-  parser.source:skip_whitespaces()
+  parser.source:match_whitespaces()
   return #parser.source.data == parser.source.position - 1
 end
 
