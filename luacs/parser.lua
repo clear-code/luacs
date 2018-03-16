@@ -450,22 +450,25 @@ local function selector(parser)
 end
 
 local function selectors_group(parser)
-  parser.source:match_whitespaces()
+  local source = parser.source
+
+  source:match_whitespaces()
   on(parser, "start_selectors_group")
   if not selector(parser) then
     return false
   end
   while true do
-    parser.source:match_whitespaces()
-    if not parser.source:match(",") then
+    source:match_whitespaces()
+    if not source:match(",") then
       break
     end
+    source:match_whitespaces()
     if not selector(parser) then
       return false
     end
   end
-  parser.source:match_whitespaces()
-  local success = (#parser.source.data == parser.source.position - 1)
+  source:match_whitespaces()
+  local success = (#source.data == source.position - 1)
   if success then
     on(parser, "end_selectors_group")
   end

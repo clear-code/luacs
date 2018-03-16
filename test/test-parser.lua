@@ -92,6 +92,36 @@ function parse(selectors_group)
   return {successed, events}
 end
 
+function TestParser.test_selectors_group()
+  luaunit.assertEquals(parse("ul, ol"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "ul",
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "ol",
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
 function TestParser.test_type_selector()
   luaunit.assertEquals(parse("html"),
                        {
