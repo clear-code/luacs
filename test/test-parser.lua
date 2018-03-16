@@ -487,6 +487,30 @@ function TestParser.test_type_selector_negation_type_selector()
   )
 end
 
+function TestParser.test_type_selector_negation_universal()
+  luaunit.assertEquals(parse("p:not( * )"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           "start_negation",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           "end_negation",
+                         },
+                       }
+  )
+end
+
 function TestParser.test_universal()
   luaunit.assertEquals(parse("*"),
                        {
@@ -872,6 +896,29 @@ function TestParser.test_universal_negation_type_selector()
                              event = "type_selector",
                              namespace_prefix = nil,
                              element_name = "span",
+                           },
+                           "end_negation",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_negation_universal()
+  luaunit.assertEquals(parse("*:not( * )"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           "start_negation",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
                            },
                            "end_negation",
                          },
