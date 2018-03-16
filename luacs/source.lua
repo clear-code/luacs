@@ -42,7 +42,7 @@ function methods.match_string(self)
     delimiter = first
     self.position = position + 1
   else
-    return false
+    return nil
   end
 
   local data_with_delimiter = self:match("[^" .. delimiter .. "]" .. delimiter)
@@ -50,7 +50,7 @@ function methods.match_string(self)
     return data_with_delimiter:sub(0, -2)
   else
     self:seek(position)
-    return false
+    return nil
   end
 end
 
@@ -66,7 +66,7 @@ function methods.match_number(self)
     return tonumber(number)
   else
     self:seek(position)
-    return false
+    return nil
   end
 end
 
@@ -75,13 +75,13 @@ function methods.match_dimension(self)
 
   local number = self:match_number()
   if not number then
-    return false
+    return nil
   end
 
   local ident = self:match_ident()
   if not ident then
     self:seek(position)
-    return false
+    return nil
   end
 
   return self.data:sub(position, self.position - 1)
