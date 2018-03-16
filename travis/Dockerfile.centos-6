@@ -12,8 +12,6 @@ RUN \
     m4 \
     unzip
 RUN \
-  mv /usr/lib/lua/5.1/* \
-     /usr/lib64/lua/5.1/ && \
   luarocks install luaunit
 
 RUN \
