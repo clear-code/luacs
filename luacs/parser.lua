@@ -349,13 +349,16 @@ end
 
 local function simple_selector_sequence(parser)
   on(parser, "start_simple_selector_sequence")
+  local n_required = 1
   if type_selector(parser) or universal(parser) then
-    if hash(parser) or class(parser) or attribute(parser) or pseudo(parser) then
-    end
-    return true
-  else
-    return false
+    n_required = 0
   end
+  local n_occurred = 0
+  -- TODO: test
+  while hash(parser) or class(parser) or attribute(parser) or pseudo(parser) do
+    n_occurred = n_occurred + 1
+  end
+  return n_occurred >= n_required
 end
 
 local function selector(parser)
