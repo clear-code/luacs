@@ -29,10 +29,12 @@ function methods.match_whitespaces(self)
   return self:match("[ \t\r\n\f]+")
 end
 
+-- TODO: support non-ASCII characters
 function methods.match_ident(self)
   return self:match("-?[_%a][_%a%d-]*")
 end
 
+-- TODO: support escape and so on
 function methods.match_string(self)
   local position = self.position
 
