@@ -59,6 +59,13 @@ function parse(selectors_group)
                    name = name,
     })
   end
+  listener.on_functional_pseudo = function(name, expression)
+    table.insert(events, {
+                   event = "functional_pseudo",
+                   name = name,
+                   expression = expression,
+    })
+  end
   local parser = luacs.Parser.new(selectors_group, listener)
   local successed = parser:parse()
   return {successed, events}
@@ -252,6 +259,181 @@ function TestParser.test_type_selector_pseudo_class()
   )
 end
 
+function TestParser.test_type_selector_functional_pseudo_plus()
+  luaunit.assertEquals(parse("p:not(+)"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "not",
+                             expression = {
+                               {"plus"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_functional_pseudo_minus()
+  luaunit.assertEquals(parse("p:not(-)"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "not",
+                             expression = {
+                               {"minus"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_functional_pseudo_dimension()
+  luaunit.assertEquals(parse("p:not(100px)"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "not",
+                             expression = {
+                               {"dimension", "100px"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_functional_pseudo_number()
+  luaunit.assertEquals(parse("p:not(100)"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "not",
+                             expression = {
+                               {"number", "100"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_functional_pseudo_string_double_quote()
+  luaunit.assertEquals(parse("p:not(\"a\")"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "not",
+                             expression = {
+                               {"string", "a"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_functional_pseudo_string_single_quote()
+  luaunit.assertEquals(parse("p:not('a')"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "not",
+                             expression = {
+                               {"string", "a"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_functional_pseudo_ident()
+  luaunit.assertEquals(parse("p:lang(ja)"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "lang",
+                             expression = {
+                               {"name", "ja"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
 function TestParser.test_universal()
   luaunit.assertEquals(parse("*"),
                        {
@@ -425,6 +607,174 @@ function TestParser.test_universal_pseudo_class()
                            {
                              event = "pseudo_class",
                              name = "visited",
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_functional_pseudo_plus()
+  luaunit.assertEquals(parse("*:not(+)"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "not",
+                             expression = {
+                               {"plus"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_functional_pseudo_minus()
+  luaunit.assertEquals(parse("*:not(-)"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "not",
+                             expression = {
+                               {"minus"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_functional_pseudo_dimension()
+  luaunit.assertEquals(parse("*:not(100px)"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "not",
+                             expression = {
+                               {"dimension", "100px"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_functional_pseudo_number()
+  luaunit.assertEquals(parse("*:not(100)"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "not",
+                             expression = {
+                               {"number", "100"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_functional_pseudo_string_double_quote()
+  luaunit.assertEquals(parse("*:not(\"a\")"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "not",
+                             expression = {
+                               {"string", "a"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_functional_pseudo_string_single_quote()
+  luaunit.assertEquals(parse("*:not('a')"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "not",
+                             expression = {
+                               {"string", "a"},
+                             },
+                           },
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_functional_pseudo_ident()
+  luaunit.assertEquals(parse("*:lang(ja)"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "functional_pseudo",
+                             name = "lang",
+                             expression = {
+                               {"name", "ja"},
+                             },
                            },
                          },
                        }

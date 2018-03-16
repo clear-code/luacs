@@ -35,6 +35,60 @@ function methods.match_ident(self)
   return self:match("-?[_%a][_%a%d-]*")
 end
 
+function methods.match_string(self)
+  local position = self.position
+
+  local first = self.data:sub(position, position)
+  local delimiter
+  if first == "\"" or first == "'" then
+    delimiter = first
+    self.position = position + 1
+  else
+    return false
+  end
+
+  local data_with_delimiter = self:match("[^" .. delimiter .. "]" .. delimiter)
+  if data_with_delimiter then
+    return data_with_delimiter:sub(0, -2)
+  else
+    self:seek(position)
+    return false
+  end
+end
+
+function methods.match_number(self)
+  local position = self.position
+
+  local number = self:match("%d+")
+  if not number then
+    number = self:match("%d?%.%d+")
+  end
+
+  if number then
+    return number
+  else
+    self:seek(position)
+    return false
+  end
+end
+
+function methods.match_dimension(self)
+  local position = self.position
+
+  local number = self:match_number()
+  if not number then
+    return false
+  end
+
+  local ident = self:match_ident()
+  if not ident then
+    self:seek(position)
+    return false
+  end
+
+  return self.data:sub(position, self.position - 1)
+end
+
 function methods.match_namespace_prefix(self)
   local start, last
 
