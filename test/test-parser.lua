@@ -49,11 +49,13 @@ function parse(selectors_group)
                    name = name,
     })
   end
-  listener.on_attribute = function(namespace_prefix, name)
+  listener.on_attribute = function(namespace_prefix, name, operator, value)
     table.insert(events, {
                    event = "attribute",
                    namespace_prefix = namespace_prefix,
                    name = name,
+                   operator = operator,
+                   value = value,
     })
   end
   listener.on_pseudo_element = function(name)
@@ -271,7 +273,7 @@ function TestParser.test_type_selector()
   )
 end
 
-function TestParser.test_type_selector_with_namespace_prefix_star()
+function TestParser.test_type_selector_namespace_prefix_star()
   luaunit.assertEquals(parse("*|html"),
                        {
                          true,
@@ -292,7 +294,7 @@ function TestParser.test_type_selector_with_namespace_prefix_star()
   )
 end
 
-function TestParser.test_type_selector_with_namespace_prefix_name()
+function TestParser.test_type_selector_namespace_prefix_name()
   luaunit.assertEquals(parse("xhtml|html"),
                        {
                          true,
@@ -313,7 +315,7 @@ function TestParser.test_type_selector_with_namespace_prefix_name()
   )
 end
 
-function TestParser.test_type_selector_with_namespace_prefix_none()
+function TestParser.test_type_selector_namespace_prefix_none()
   luaunit.assertEquals(parse("|html"),
                        {
                          true,
@@ -401,6 +403,8 @@ function TestParser.test_type_selector_attribute()
                              event = "attribute",
                              namespace_prefix = nil,
                              name = "id",
+                             operator = nil,
+                             value = nil,
                            },
                            "end_simple_selector_sequence",
                            "end_selector",
@@ -410,7 +414,7 @@ function TestParser.test_type_selector_attribute()
   )
 end
 
-function TestParser.test_type_selector_attribute_with_namespace_prefix()
+function TestParser.test_type_selector_attribute_namespace_prefix()
   luaunit.assertEquals(parse("p[ xml|lang ]"),
                        {
                          true,
@@ -427,6 +431,176 @@ function TestParser.test_type_selector_attribute_with_namespace_prefix()
                              event = "attribute",
                              namespace_prefix = "xml",
                              name = "lang",
+                             operator = nil,
+                             value = nil,
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_attribute_prefix_match()
+  luaunit.assertEquals(parse("a[href ^= \"https://\"]"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "a",
+                           },
+                           {
+                             event = "attribute",
+                             namespace_prefix = nil,
+                             name = "href",
+                             operator = "^=",
+                             value = "https://",
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_attribute_suffix_match()
+  luaunit.assertEquals(parse("a[href $= html]"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "a",
+                           },
+                           {
+                             event = "attribute",
+                             namespace_prefix = nil,
+                             name = "href",
+                             operator = "$=",
+                             value = "html",
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_attribute_substring_match()
+  luaunit.assertEquals(parse("a[href *= secret]"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "a",
+                           },
+                           {
+                             event = "attribute",
+                             namespace_prefix = nil,
+                             name = "href",
+                             operator = "*=",
+                             value = "secret",
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_attribute_equal()
+  luaunit.assertEquals(parse("a[id = content]"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "a",
+                           },
+                           {
+                             event = "attribute",
+                             namespace_prefix = nil,
+                             name = "id",
+                             operator = "=",
+                             value = "content",
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_attribute_includes()
+  luaunit.assertEquals(parse("a[class ~= menu]"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "a",
+                           },
+                           {
+                             event = "attribute",
+                             namespace_prefix = nil,
+                             name = "class",
+                             operator = "~=",
+                             value = "menu",
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_type_selector_attribute_dash_match()
+  luaunit.assertEquals(parse("a[lang |= ja]"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "a",
+                           },
+                           {
+                             event = "attribute",
+                             namespace_prefix = nil,
+                             name = "lang",
+                             operator = "|=",
+                             value = "ja",
                            },
                            "end_simple_selector_sequence",
                            "end_selector",
@@ -813,6 +987,8 @@ function TestParser.test_type_selector_negation_attribute()
                              event = "attribute",
                              namespace_prefix = "",
                              name = "class",
+                             operator = nil,
+                             value = nil,
                            },
                            "end_negation",
                            "end_simple_selector_sequence",
@@ -870,7 +1046,7 @@ function TestParser.test_universal()
   )
 end
 
-function TestParser.test_universal_with_namespace_prefix_star()
+function TestParser.test_universal_namespace_prefix_star()
   luaunit.assertEquals(parse("*|*"),
                        {
                          true,
@@ -890,7 +1066,7 @@ function TestParser.test_universal_with_namespace_prefix_star()
   )
 end
 
-function TestParser.test_universal_with_namespace_prefix_name()
+function TestParser.test_universal_namespace_prefix_name()
   luaunit.assertEquals(parse("xhtml|*"),
                        {
                          true,
@@ -910,7 +1086,7 @@ function TestParser.test_universal_with_namespace_prefix_name()
   )
 end
 
-function TestParser.test_universal_with_namespace_prefix_none()
+function TestParser.test_universal_namespace_prefix_none()
   luaunit.assertEquals(parse("|*"),
                        {
                          true,
@@ -994,6 +1170,8 @@ function TestParser.test_universal_attribute()
                              event = "attribute",
                              namespace_prefix = nil,
                              name = "id",
+                             operator = nil,
+                             value = nil,
                            },
                            "end_simple_selector_sequence",
                            "end_selector",
@@ -1003,7 +1181,7 @@ function TestParser.test_universal_attribute()
   )
 end
 
-function TestParser.test_universal_attribute_with_namespace_prefix()
+function TestParser.test_universal_attribute_namespace_prefix()
   luaunit.assertEquals(parse("*[xml|lang]"),
                        {
                          true,
@@ -1019,6 +1197,8 @@ function TestParser.test_universal_attribute_with_namespace_prefix()
                              event = "attribute",
                              namespace_prefix = "xml",
                              name = "lang",
+                             operator = nil,
+                             value = nil,
                            },
                            "end_simple_selector_sequence",
                            "end_selector",
@@ -1391,6 +1571,8 @@ function TestParser.test_universal_negation_attribute()
                              event = "attribute",
                              namespace_prefix = "",
                              name = "class",
+                             operator = nil,
+                             value = nil,
                            },
                            "end_negation",
                            "end_simple_selector_sequence",
@@ -1419,6 +1601,168 @@ function TestParser.test_universal_negation_pseudo()
                              name = "checked",
                            },
                            "end_negation",
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_attribute_prefix_match()
+  luaunit.assertEquals(parse("*[href ^= \"https://\"]"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "attribute",
+                             namespace_prefix = nil,
+                             name = "href",
+                             operator = "^=",
+                             value = "https://",
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_attribute_suffix_match()
+  luaunit.assertEquals(parse("*[href $= html]"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "attribute",
+                             namespace_prefix = nil,
+                             name = "href",
+                             operator = "$=",
+                             value = "html",
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_attribute_substring_match()
+  luaunit.assertEquals(parse("*[href *= secret]"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "attribute",
+                             namespace_prefix = nil,
+                             name = "href",
+                             operator = "*=",
+                             value = "secret",
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_attribute_equal()
+  luaunit.assertEquals(parse("*[id = content]"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "attribute",
+                             namespace_prefix = nil,
+                             name = "id",
+                             operator = "=",
+                             value = "content",
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_attribute_includes()
+  luaunit.assertEquals(parse("*[class ~= menu]"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "attribute",
+                             namespace_prefix = nil,
+                             name = "class",
+                             operator = "~=",
+                             value = "menu",
+                           },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
+function TestParser.test_universal_attribute_dash_match()
+  luaunit.assertEquals(parse("*[lang |= ja]"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           {
+                             event = "attribute",
+                             namespace_prefix = nil,
+                             name = "lang",
+                             operator = "|=",
+                             value = "ja",
+                           },
                            "end_simple_selector_sequence",
                            "end_selector",
                            "end_selectors_group",

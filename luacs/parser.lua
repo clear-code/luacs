@@ -233,14 +233,41 @@ local function attribute(parser)
 
   source:match_whitespaces()
 
-  -- TODO: support condition
+  local operator = nil
+  if source:match("%^=") then
+    operator = "^="
+  elseif source:match("%$=") then
+    operator = "$="
+  elseif source:match("%*=") then
+    operator = "*="
+  elseif source:match("=") then
+    operator = "="
+  elseif source:match("~=") then
+    operator = "~="
+  elseif source:match("|=") then
+    operator = "|="
+  end
+
+  local value = nil
+  if operator then
+    source:match_whitespaces()
+    value = source:match_ident()
+    if not value then
+      value = source:match_string()
+    end
+    if not value then
+      source:seek(position)
+      return false
+    end
+    source:match_whitespaces()
+  end
 
   if not source:match("%]") then
     source:seek(position)
     return false
   end
 
-  on(parser, "attribute", namespace_prefix, name)
+  on(parser, "attribute", namespace_prefix, name, operator, value)
   return true
 end
 

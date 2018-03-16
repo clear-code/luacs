@@ -45,7 +45,7 @@ function methods.match_string(self)
     return nil
   end
 
-  local data_with_delimiter = self:match("[^" .. delimiter .. "]" .. delimiter)
+  local data_with_delimiter = self:match("[^" .. delimiter .. "]*" .. delimiter)
   if data_with_delimiter then
     return data_with_delimiter:sub(0, -2)
   else
