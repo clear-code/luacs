@@ -388,7 +388,11 @@ local function simple_selector_sequence(parser)
           pseudo(parser) do
     n_occurred = n_occurred + 1
   end
-  return n_occurred >= n_required
+  local success = (n_occurred >= n_required)
+  if success then
+    on(parser, "end_simple_selector_sequence")
+  end
+  return success
 end
 
 local function combinator(parser)
@@ -411,6 +415,7 @@ local function selector(parser)
       return false
     end
   end
+  on(parser, "end_selector")
   return true
 end
 
@@ -430,7 +435,11 @@ local function selectors_group(parser)
     end
   end
   parser.source:match_whitespaces()
-  return #parser.source.data == parser.source.position - 1
+  local success = (#parser.source.data == parser.source.position - 1)
+  if success then
+    on(parser, "end_selectors_group")
+  end
+  return success
 end
 
 function methods.parse(self)

@@ -9,11 +9,20 @@ function parse(selectors_group)
   listener.on_start_selectors_group = function()
     table.insert(events, "start_selectors_group")
   end
+  listener.on_end_selectors_group = function()
+    table.insert(events, "end_selectors_group")
+  end
   listener.on_start_selector = function()
     table.insert(events, "start_selector")
   end
+  listener.on_end_selector = function()
+    table.insert(events, "end_selector")
+  end
   listener.on_start_simple_selector_sequence = function()
     table.insert(events, "start_simple_selector_sequence")
+  end
+  listener.on_end_simple_selector_sequence = function()
+    table.insert(events, "end_simple_selector_sequence")
   end
   listener.on_type_selector = function(namespace_prefix, element_name)
     table.insert(events, {
@@ -90,6 +99,9 @@ function TestParser.test_type_selector()
                              namespace_prefix = nil,
                              element_name = "html",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -108,6 +120,9 @@ function TestParser.test_type_selector_with_namespace_prefix_star()
                              namespace_prefix = "*",
                              element_name = "html",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -126,6 +141,9 @@ function TestParser.test_type_selector_with_namespace_prefix_name()
                              namespace_prefix = "xhtml",
                              element_name = "html",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -144,6 +162,9 @@ function TestParser.test_type_selector_with_namespace_prefix_none()
                              namespace_prefix = "",
                              element_name = "html",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -166,6 +187,9 @@ function TestParser.test_type_selector_hash()
                              event = "hash",
                              name = "content",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -188,6 +212,9 @@ function TestParser.test_type_selector_class()
                              event = "class",
                              name = "content",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -211,6 +238,9 @@ function TestParser.test_type_selector_attribute()
                              namespace_prefix = nil,
                              name = "id",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -234,6 +264,9 @@ function TestParser.test_type_selector_attribute_with_namespace_prefix()
                              namespace_prefix = "xml",
                              name = "lang",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -256,6 +289,9 @@ function TestParser.test_type_selector_pseudo_element()
                              event = "pseudo_element",
                              name = "before",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -278,6 +314,9 @@ function TestParser.test_type_selector_pseudo_class()
                              event = "pseudo_class",
                              name = "visited",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -304,6 +343,9 @@ function TestParser.test_type_selector_functional_pseudo_plus()
                                {"number", 1},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -330,6 +372,9 @@ function TestParser.test_type_selector_functional_pseudo_minus()
                                {"number", 1},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -355,6 +400,9 @@ function TestParser.test_type_selector_functional_pseudo_dimension()
                                {"dimension", "2n"},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -380,6 +428,9 @@ function TestParser.test_type_selector_functional_pseudo_number()
                                {"number", 1},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -406,6 +457,9 @@ function TestParser.test_type_selector_functional_pseudo_string_double_quote()
                                {"string", "a"},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -432,6 +486,9 @@ function TestParser.test_type_selector_functional_pseudo_string_single_quote()
                                {"string", "a"},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -457,6 +514,9 @@ function TestParser.test_type_selector_functional_pseudo_ident()
                                {"name", "ja"},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -482,6 +542,9 @@ function TestParser.test_type_selector_negation_type_selector()
                              element_name = "span",
                            },
                            "end_negation",
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -506,6 +569,9 @@ function TestParser.test_type_selector_negation_universal()
                              namespace_prefix = nil,
                            },
                            "end_negation",
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -530,6 +596,9 @@ function TestParser.test_type_selector_negation_hash()
                              name = "content",
                            },
                            "end_negation",
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -547,6 +616,9 @@ function TestParser.test_universal()
                              event = "universal",
                              namespace_prefix = nil,
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -564,6 +636,9 @@ function TestParser.test_universal_with_namespace_prefix_star()
                              event = "universal",
                              namespace_prefix = "*",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -581,6 +656,9 @@ function TestParser.test_universal_with_namespace_prefix_name()
                              event = "universal",
                              namespace_prefix = "xhtml",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -598,6 +676,9 @@ function TestParser.test_universal_with_namespace_prefix_none()
                              event = "universal",
                              namespace_prefix = "",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -619,6 +700,9 @@ function TestParser.test_universal_hash()
                              event = "hash",
                              name = "content",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -640,6 +724,9 @@ function TestParser.test_universal_class()
                              event = "class",
                              name = "content",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -662,6 +749,9 @@ function TestParser.test_universal_attribute()
                              namespace_prefix = nil,
                              name = "id",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -684,6 +774,9 @@ function TestParser.test_universal_attribute_with_namespace_prefix()
                              namespace_prefix = "xml",
                              name = "lang",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -705,6 +798,9 @@ function TestParser.test_universal_pseudo_element()
                              event = "pseudo_element",
                              name = "before",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -726,6 +822,9 @@ function TestParser.test_universal_pseudo_class()
                              event = "pseudo_class",
                              name = "visited",
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -751,6 +850,9 @@ function TestParser.test_universal_functional_pseudo_plus()
                                {"number", 1},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -776,6 +878,9 @@ function TestParser.test_universal_functional_pseudo_minus()
                                {"number", 1},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -800,6 +905,9 @@ function TestParser.test_universal_functional_pseudo_dimension()
                                {"dimension", "2n"},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -824,6 +932,9 @@ function TestParser.test_universal_functional_pseudo_number()
                                {"number", 1},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -849,6 +960,9 @@ function TestParser.test_universal_functional_pseudo_string_double_quote()
                                {"string", "a"},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -874,6 +988,9 @@ function TestParser.test_universal_functional_pseudo_string_single_quote()
                                {"string", "a"},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -898,6 +1015,9 @@ function TestParser.test_universal_functional_pseudo_ident()
                                {"name", "ja"},
                              },
                            },
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -922,6 +1042,9 @@ function TestParser.test_universal_negation_type_selector()
                              element_name = "span",
                            },
                            "end_negation",
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -945,6 +1068,9 @@ function TestParser.test_universal_negation_universal()
                              namespace_prefix = nil,
                            },
                            "end_negation",
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
@@ -968,6 +1094,9 @@ function TestParser.test_universal_negation_hash()
                              name = "content",
                            },
                            "end_negation",
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
                          },
                        }
   )
