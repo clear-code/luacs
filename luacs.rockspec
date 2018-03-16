@@ -27,6 +27,7 @@ build = {
   modules = {
     ["luacs"] = "luacs.lua",
     ["luacs.parser"] = "luacs/parser.lua",
+    ["luacs.source"] = "luacs/source.lua",
   },
   copy_directories = {
     "docs",
