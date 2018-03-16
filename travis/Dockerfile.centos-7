@@ -35,5 +35,4 @@ RUN rm -rf luacs.lua luacs
 USER luacs
 
 CMD \
-  test/run-test.lua && \
-  sample/parse-html-cqueues-thread.lua sample/sample.html
+  test/run-test.lua
