@@ -359,7 +359,8 @@ local function negation(parser)
   source:match_whitespaces()
   if type_selector(parser) or
        universal(parser) or
-       hash(parser) then
+       hash(parser) or
+       class(parser) then
     source:match_whitespaces()
     if source:match("%)") then
       on(parser, "end_negation")

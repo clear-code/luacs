@@ -604,6 +604,33 @@ function TestParser.test_type_selector_negation_hash()
   )
 end
 
+function TestParser.test_type_selector_negation_class()
+  luaunit.assertEquals(parse("p:not( .content )"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "type_selector",
+                             namespace_prefix = nil,
+                             element_name = "p",
+                           },
+                           "start_negation",
+                           {
+                             event = "class",
+                             name = "content",
+                           },
+                           "end_negation",
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
+
 function TestParser.test_universal()
   luaunit.assertEquals(parse("*"),
                        {
@@ -1102,3 +1129,28 @@ function TestParser.test_universal_negation_hash()
   )
 end
 
+function TestParser.test_universal_negation_class()
+  luaunit.assertEquals(parse("*:not( .content )"),
+                       {
+                         true,
+                         {
+                           "start_selectors_group",
+                           "start_selector",
+                           "start_simple_selector_sequence",
+                           {
+                             event = "universal",
+                             namespace_prefix = nil,
+                           },
+                           "start_negation",
+                           {
+                             event = "class",
+                             name = "content",
+                           },
+                           "end_negation",
+                           "end_simple_selector_sequence",
+                           "end_selector",
+                           "end_selectors_group",
+                         },
+                       }
+  )
+end
