@@ -242,6 +242,82 @@ local function attribute(parser)
   return true
 end
 
+local function expression_component(parser, expression)
+  local source = parser.source
+
+  if source:match("%+") then
+    table.insert(expression, {"plus"})
+    return true
+  end
+
+  if source:match("-") then
+    table.insert(expression, {"minus"})
+    return true
+  end
+
+  local dimension = source:match_dimension()
+  if dimension then
+    table.insert(expression, {"dimension", dimension})
+    return true
+  end
+
+  local number = source:match_number()
+  if number then
+    table.insert(expression, {"number", number})
+    return true
+  end
+
+  local string = source:match_string()
+  if string then
+    table.insert(expression, {"string", string})
+    return true
+  end
+
+  local name = source:match_ident()
+  if name then
+    table.insert(expression, {"name", name})
+    return true
+  end
+
+  return false
+end
+
+local function functional_pseudo(parser)
+  local source = parser.source
+  local position = source.position
+
+  local function_name = source:match_ident()
+  if not function_name then
+    return false
+  end
+
+  if not source:match("%(") then
+    source:seek(position)
+    return false
+  end
+
+  local expression = {}
+  while true do
+    source:skip_whitespaces()
+    if not expression_component(parser, expression) then
+      break
+    end
+  end
+
+  if #expression == 0 then
+    source:seek(position)
+    return false
+  end
+
+  if source:match("%)") then
+    on(parser, "functional_pseudo", function_name, expression)
+    return true
+  else
+    source:seek(position)
+    return false
+  end
+end
+
 local function pseudo(parser)
   local source = parser.source
   local position = source.position
@@ -257,17 +333,17 @@ local function pseudo(parser)
     event_name = "pseudo_class"
   end
 
+  if functional_pseudo(parser) then
+    return true
+  end
+
   local name = source:match_ident()
   if name then
     on(parser, event_name, name)
     return true
   else
-    if functional_pseudo(parser) then
-      return true
-    else
-      source:peek(position)
-      return false
-    end
+    source:seek(position)
+    return false
   end
 end
 
@@ -299,14 +375,14 @@ local function selectors_group(parser)
   while true do
     parser.source:skip_whitespaces()
     if not parser.source:match(",") then
-      return true
+      break
     end
     if not selector(parser) then
-      error("XXX")
       return false
     end
   end
-  return true
+  parser.source:skip_whitespaces()
+  return #parser.source.data == parser.source.position - 1
 end
 
 function methods.parse(self)
