@@ -79,6 +79,62 @@ function methods.on_universal(self, namespace_prefix, element_name)
   self.xpaths[#self.xpaths] = xpath
 end
 
+function methods.on_hash(self, name)
+  local xpath = self.xpaths[#self.xpaths]
+  xpath = xpath .. "[@id='" .. name .. "' or @name='" .. name .. "']"
+  self.xpaths[#self.xpaths] = xpath
+end
+
+local function attribute_include(xpath, name, value)
+  return xpath ..
+    "[contains(" ..
+    "concat(' ', normalize-space(@" .. name .. "), ' '), " ..
+    "' " .. value .. " ')]"
+end
+
+function methods.on_class(self, name)
+  local xpath = self.xpaths[#self.xpaths]
+  xpath = attribute_include(xpath .. "[@class]", "class", name)
+  self.xpaths[#self.xpaths] = xpath
+end
+
+function methods.on_attribute(self,
+                              namespace_prefix,
+                              attribute_name,
+                              operator,
+                              value)
+  local xpath = self.xpaths[#self.xpaths]
+
+  local name
+  if namespace_prefix then
+    name = namespace_prefix .. ":" .. attribute_name
+  else
+    name = attribute_name
+  end
+
+  xpath = xpath .. "[@" .. name .. "]"
+  if operator == "^=" then
+    xpath = xpath .. "[starts-with(@" .. name .. ", '" .. value .. "')]"
+  elseif operator == "$=" then
+    xpath = xpath ..
+      "[substring(@" .. name .. ", " ..
+      "string-length(@" .. name .. ") - " .. #value .. ")" ..
+      "='" .. value .. "']"
+  elseif operator == "*=" then
+    xpath = xpath .. "[contains(@" .. name .. ", '" .. value .. "')]"
+  elseif operator == "=" then
+    xpath = xpath .. "[@" .. name .. "='" .. value .. "']"
+  elseif operator == "~=" then
+    xpath = attribute_include(xpath, name, value)
+  elseif operator == "|=" then
+    xpath = xpath ..
+      "[@" .. name .. "='" .. value .. "' or " ..
+      "starts-with(@" .. name .. ", '" .. value .. "-')]"
+  end
+
+  self.xpaths[#self.xpaths] = xpath
+end
+
 function XPathConverter.new()
   local converter = {
     xpaths = {},
