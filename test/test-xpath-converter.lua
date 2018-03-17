@@ -54,3 +54,27 @@ function TestXPathConverter.test_type_selector_namespace_prefix_none()
     luacs.to_xpaths("|ul"),
     {"/descendant-or-self::ul"})
 end
+
+function TestXPathConverter.test_universal()
+  luaunit.assertEquals(
+    luacs.to_xpaths("*"),
+    {"/descendant-or-self::*"})
+end
+
+function TestXPathConverter.test_universal_namespace_prefix_name()
+  luaunit.assertEquals(
+    luacs.to_xpaths("xhtml|*"),
+    {"/descendant-or-self::*[starts-with(name(), 'xhtml')]"})
+end
+
+function TestXPathConverter.test_universal_namespace_prefix_star()
+  luaunit.assertEquals(
+    luacs.to_xpaths("*|*"),
+    {"/descendant-or-self::*"})
+end
+
+function TestXPathConverter.test_universal_namespace_prefix_none()
+  luaunit.assertEquals(
+    luacs.to_xpaths("|*"),
+    {"/descendant-or-self::*[namespace-uri()='']"})
+end

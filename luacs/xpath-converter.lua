@@ -53,6 +53,32 @@ function methods.on_type_selector(self, namespace_prefix, element_name)
   self.xpaths[#self.xpaths] = xpath
 end
 
+function methods.on_universal(self, namespace_prefix, element_name)
+  local xpath = self.xpaths[#self.xpaths]
+
+  local prefix
+  if self.combinator == "+" then
+    prefix = "/following-sibling::*[position()=1]"
+  elseif self.combinator == ">" then
+    prefix = "/*"
+  elseif self.combinator == "~" then
+    prefix = "/following-sibling::*"
+  elseif self.combinator == " " then
+    prefix = "/descendant-or-self::*"
+  end
+
+  if namespace_prefix == nil or namespace_prefix == "*" then
+    xpath = xpath .. prefix
+  elseif namespace_prefix == "" then
+    xpath = xpath .. prefix .. "[namespace-uri()='']"
+  else
+    xpath = xpath .. prefix ..
+      "[starts-with(name(), '" .. namespace_prefix .. "')]"
+  end
+
+  self.xpaths[#self.xpaths] = xpath
+end
+
 function XPathConverter.new()
   local converter = {
     xpaths = {},
