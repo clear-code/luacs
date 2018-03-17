@@ -28,6 +28,7 @@ build = {
     ["luacs"] = "luacs.lua",
     ["luacs.parser"] = "luacs/parser.lua",
     ["luacs.source"] = "luacs/source.lua",
+    ["luacs.xpath-converter"] = "luacs/xpath-converter.lua",
   },
   copy_directories = {
     "docs",

@@ -6,50 +6,50 @@ TestParser = {}
 function parse(selectors_group)
   local events = {}
   local listener = {}
-  listener.on_start_selectors_group = function()
+  listener.on_start_selectors_group = function(self)
     table.insert(events, "start_selectors_group")
   end
-  listener.on_end_selectors_group = function()
+  listener.on_end_selectors_group = function(self)
     table.insert(events, "end_selectors_group")
   end
-  listener.on_start_selector = function()
+  listener.on_start_selector = function(self)
     table.insert(events, "start_selector")
   end
-  listener.on_end_selector = function()
+  listener.on_end_selector = function(self)
     table.insert(events, "end_selector")
   end
-  listener.on_start_simple_selector_sequence = function()
+  listener.on_start_simple_selector_sequence = function(self)
     table.insert(events, "start_simple_selector_sequence")
   end
-  listener.on_end_simple_selector_sequence = function()
+  listener.on_end_simple_selector_sequence = function(self)
     table.insert(events, "end_simple_selector_sequence")
   end
-  listener.on_type_selector = function(namespace_prefix, element_name)
+  listener.on_type_selector = function(self, namespace_prefix, element_name)
     table.insert(events, {
                    event = "type_selector",
                    namespace_prefix = namespace_prefix,
                    element_name = element_name,
     })
   end
-  listener.on_universal = function(namespace_prefix)
+  listener.on_universal = function(self, namespace_prefix)
     table.insert(events, {
                    event = "universal",
                    namespace_prefix = namespace_prefix,
     })
   end
-  listener.on_hash = function(name)
+  listener.on_hash = function(self, name)
     table.insert(events, {
                    event = "hash",
                    name = name,
     })
   end
-  listener.on_class = function(name)
+  listener.on_class = function(self, name)
     table.insert(events, {
                    event = "class",
                    name = name,
     })
   end
-  listener.on_attribute = function(namespace_prefix, name, operator, value)
+  listener.on_attribute = function(self, namespace_prefix, name, operator, value)
     table.insert(events, {
                    event = "attribute",
                    namespace_prefix = namespace_prefix,
@@ -58,32 +58,32 @@ function parse(selectors_group)
                    value = value,
     })
   end
-  listener.on_pseudo_element = function(name)
+  listener.on_pseudo_element = function(self, name)
     table.insert(events, {
                    event = "pseudo_element",
                    name = name,
     })
   end
-  listener.on_pseudo_class = function(name)
+  listener.on_pseudo_class = function(self, name)
     table.insert(events, {
                    event = "pseudo_class",
                    name = name,
     })
   end
-  listener.on_functional_pseudo = function(name, expression)
+  listener.on_functional_pseudo = function(self, name, expression)
     table.insert(events, {
                    event = "functional_pseudo",
                    name = name,
                    expression = expression,
     })
   end
-  listener.on_start_negation = function(name, expression)
+  listener.on_start_negation = function(self, name, expression)
     table.insert(events, "start_negation")
   end
-  listener.on_end_negation = function(name, expression)
+  listener.on_end_negation = function(self, name, expression)
     table.insert(events, "end_negation")
   end
-  listener.on_combinator = function(combinator)
+  listener.on_combinator = function(self, combinator)
     table.insert(events, {
                    event = "combinator",
                    combinator = combinator,

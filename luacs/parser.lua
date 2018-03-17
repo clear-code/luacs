@@ -149,9 +149,10 @@ end
 -- .                return *yytext;
 
 local function on(parser, name, ...)
-  local callback = parser.listener["on_" .. name]
+  local listener = parser.listener
+  local callback = listener["on_" .. name]
   if callback then
-    callback(...)
+    callback(listener, ...)
   end
 end
 
