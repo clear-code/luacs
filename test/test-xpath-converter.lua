@@ -175,6 +175,13 @@ end
 
 function TestXPathConverter.test_attribute_dash_match()
   luaunit.assertEquals(
+    luacs.to_xpaths("[lang|='ja']"),
+    {"/descendant::*" ..
+       "[@lang][@lang='ja' or starts-with(@lang, 'ja-')]"})
+end
+
+function TestXPathConverter.test_attribute_dash_match_namespace_prefix()
+  luaunit.assertEquals(
     luacs.to_xpaths("[xml|lang|='ja']"),
     {"/descendant::*" ..
        "[@xml:lang][@xml:lang='ja' or starts-with(@xml:lang, 'ja-')]"})

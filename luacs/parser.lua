@@ -224,12 +224,18 @@ local function attribute(parser)
 
   source:match_whitespaces()
 
+  local position_name = source.position
   local namespace_prefix = source:match_namespace_prefix()
 
   local name = parser.source:match_ident()
   if not name then
-    source:seek(position)
-    return false
+    source:seek(position_name)
+    namespace_prefix = nil
+    name = source:match_ident()
+    if not name then
+      source:seek(position)
+      return false
+    end
   end
 
   source:match_whitespaces()

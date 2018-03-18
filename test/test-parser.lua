@@ -582,6 +582,31 @@ function TestParser.test_type_selector_attribute_dash_match()
   )
 end
 
+function TestParser.test_type_selector_attribute_dash_match_no_whitespace()
+  luaunit.assertEquals(parse("a[lang|=ja]"),
+                       {
+                         "start_selectors_group",
+                         "start_selector",
+                         "start_simple_selector_sequence",
+                         {
+                           event = "type_selector",
+                           namespace_prefix = nil,
+                           element_name = "a",
+                         },
+                         {
+                           event = "attribute",
+                           namespace_prefix = nil,
+                           name = "lang",
+                           operator = "|=",
+                           value = "ja",
+                         },
+                         "end_simple_selector_sequence",
+                         "end_selector",
+                         "end_selectors_group",
+                       }
+  )
+end
+
 function TestParser.test_type_selector_pseudo_element()
   luaunit.assertEquals(parse("p::before"),
                        {

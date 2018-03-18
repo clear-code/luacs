@@ -104,7 +104,7 @@ function methods.match_namespace_prefix(self)
 
   local prefix = self:match("-?[_%a][_%a%d-]*|")
   if not prefix then
-    prefix = self:match("*|")
+    prefix = self:match("%*|")
   end
 
   if prefix then
