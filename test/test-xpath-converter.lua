@@ -175,6 +175,13 @@ function TestXPathConverter.test_pseudo_class_first_child()
        "[count(preceding-sibling::*) = 0]"})
 end
 
+function TestXPathConverter.test_pseudo_class_first_child()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:last-child"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[count(following-sibling::*) = 0]"})
+end
+
 function TestXPathConverter.test_functional_pseudo_lang()
   luaunit.assertEquals(
     luacs.to_xpaths("p:lang(ja)"),
