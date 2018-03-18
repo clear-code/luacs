@@ -3,6 +3,14 @@ local luacs = require("luacs")
 
 TestXPathConverter = {}
 
+local function assert_to_xpath_error(css_selector_groups, expected_message)
+  local success, actual_message = pcall(luacs.to_xpaths, css_selector_groups)
+  luaunit.failIf(success,
+                 "Must be fail to convert: <" .. css_selector_groups .. ">")
+  luaunit.assertEquals(actual_message:gsub("^.+:%d+: ", ""),
+                       expected_message)
+end
+
 function TestXPathConverter.test_combinator_plus()
   luaunit.assertEquals(
     luacs.to_xpaths("ul + li"),
@@ -141,3 +149,16 @@ function TestXPathConverter.test_attribute_dash_match()
     {"/descendant-or-self::*[local-name()='div']" ..
        "[@xml:lang][@xml:lang='ja' or starts-with(@xml:lang, 'ja-')]"})
 end
+
+function TestXPathConverter.test_pseudo_element()
+  assert_to_xpath_error("div::before",
+                        "Failed to convert to XPath: " ..
+                          "pseudo-element isn't supported: <before>")
+end
+
+function TestXPathConverter.test_pseudo_class()
+  assert_to_xpath_error("a:hover",
+                        "Failed to convert to XPath: " ..
+                          "pseudo-class isn't supported: <hover>")
+end
+

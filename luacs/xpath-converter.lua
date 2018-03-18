@@ -135,6 +135,16 @@ function methods.on_attribute(self,
   self.xpaths[#self.xpaths] = xpath
 end
 
+function methods.on_pseudo_element(self, name)
+  error("Failed to convert to XPath: " ..
+          "pseudo-element isn't supported: <" .. name .. ">")
+end
+
+function methods.on_pseudo_class(self, name)
+  error("Failed to convert to XPath: " ..
+          "pseudo-class isn't supported: <" .. name .. ">")
+end
+
 function XPathConverter.new()
   local converter = {
     xpaths = {},
