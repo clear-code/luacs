@@ -196,8 +196,27 @@ function methods.on_functional_pseudo_lang(self, name, expression)
   self.xpaths[#self.xpaths] = xpath
 end
 
-local function parse_nth_child_expression(normalized_expression)
-  local start, last, a_sign, a, b_sign, b
+local function normalize_expression(expression)
+  local normalized_expression = ""
+  for _, component in ipairs(expression) do
+    if #component == 1 then
+      if component[1] == "plus" then
+        normalized_expression = normalized_expression .. "+"
+      elseif component[1] == "minus" then
+        normalized_expression = normalized_expression .. "-"
+      else
+        normalized_expression = normalized_expression .. component[1]
+      end
+    else
+      normalized_expression = normalized_expression .. component[2]
+    end
+  end
+  return normalized_expression
+end
+
+-- aN + b
+local function parse_nth_child_expression(name, expression)
+  local normalized_expression = normalize_expression(expression)
 
   if normalized_expression == "odd" then
     return 2, 1
@@ -206,6 +225,8 @@ local function parse_nth_child_expression(normalized_expression)
   if normalized_expression == "even" then
     return 2, 0
   end
+
+  local start, last, a_sign, a, b_sign, b
 
   start, last, a_sign, a_raw, b_sign, b_raw =
     normalized_expression:find("^([+-])(%d+)n([+-])(%d+)$")
@@ -300,43 +321,20 @@ local function parse_nth_child_expression(normalized_expression)
     return 0, tonumber(b_raw)
   end
 
-  return nil, nil
+  error("Failed to convert to XPath: " .. name .. ": " ..
+          "invalid N: <" .. normalized_expression .. ">")
 end
 
-function methods.on_functional_pseudo_nth_child(self, name, expression)
-  local xpath = self.xpaths[#self.xpaths]
-
-  local normalized_expression = ""
-  for _, component in ipairs(expression) do
-    if #component == 1 then
-      if component[1] == "plus" then
-        normalized_expression = normalized_expression .. "+"
-      elseif component[1] == "minus" then
-        normalized_expression = normalized_expression .. "-"
-      else
-        normalized_expression = normalized_expression .. component[1]
-      end
-    else
-      normalized_expression = normalized_expression .. component[2]
-    end
-  end
-
-  -- aN + b
-  local a, b = parse_nth_child_expression(normalized_expression)
-  if a == nil then
-    error("Failed to convert to XPath: " .. name .. ": " ..
-            "invalid N: <" .. normalized_expression .. ">")
-  end
-
+local function build_nth_child_xpath(xpath, a, b, axis)
   if a == 0 then
-    xpath = xpath .. "[count(preceding-sibling::*) = " .. (b - 1) .. "]"
+    xpath = xpath .. "[count(" .. axis .. "::*) = " .. (b - 1) .. "]"
   elseif a < 0 then
     if b > 1 then
-      xpath = xpath .. "[count(preceding-sibling::*) <= " .. (b - 1) .. "]"
+      xpath = xpath .. "[count(" .. axis .. "::*) <= " .. (b - 1) .. "]"
       if a < -1 then
         local mod = (b - 1) % a
         xpath = xpath ..
-          "[count(preceding-sibling::*) mod " .. a .. " = " .. mod .. "]"
+          "[count(" .. axis .. "::*) mod " .. a .. " = " .. mod .. "]"
       end
     else
       -- never match
@@ -344,14 +342,32 @@ function methods.on_functional_pseudo_nth_child(self, name, expression)
     end
   else
     if b > 1 then
-      xpath = xpath .. "[count(preceding-sibling::*) >= " .. (b - 1) .. "]"
+      xpath = xpath .. "[count(" .. axis .. "::*) >= " .. (b - 1) .. "]"
     end
     if a > 1 then
       local mod = (b - 1) % a
       xpath = xpath ..
-        "[count(preceding-sibling::*) mod " .. a .. " = " .. mod .. "]"
+        "[count(" .. axis .. "::*) mod " .. a .. " = " .. mod .. "]"
     end
   end
+
+  return xpath
+end
+
+function methods.on_functional_pseudo_nth_child(self, name, expression)
+  local xpath = self.xpaths[#self.xpaths]
+
+  local a, b = parse_nth_child_expression(name, expression)
+  xpath = build_nth_child_xpath(xpath, a, b, "preceding-sibling")
+
+  self.xpaths[#self.xpaths] = xpath
+end
+
+function methods.on_functional_pseudo_nth_last_child(self, name, expression)
+  local xpath = self.xpaths[#self.xpaths]
+
+  local a, b = parse_nth_child_expression(name, expression)
+  xpath = build_nth_child_xpath(xpath, a, b, "following-sibling")
 
   self.xpaths[#self.xpaths] = xpath
 end
