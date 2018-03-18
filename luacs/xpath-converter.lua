@@ -331,8 +331,17 @@ function methods.on_functional_pseudo_nth_child(self, name, expression)
   if a == 0 then
     xpath = xpath .. "[count(preceding-sibling::*) = " .. (b - 1) .. "]"
   elseif a < 0 then
-    -- never match
-    xpath = xpath .. "[0]"
+    if b > 1 then
+      xpath = xpath .. "[count(preceding-sibling::*) <= " .. (b - 1) .. "]"
+      if a < -1 then
+        local mod = (b - 1) % a
+        xpath = xpath ..
+          "[count(preceding-sibling::*) mod " .. a .. " = " .. mod .. "]"
+      end
+    else
+      -- never match
+      xpath = xpath .. "[0]"
+    end
   else
     if b > 1 then
       xpath = xpath .. "[count(preceding-sibling::*) >= " .. (b - 1) .. "]"
