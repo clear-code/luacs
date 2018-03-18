@@ -217,7 +217,7 @@ local function normalize_expression(expression)
 end
 
 -- aN + b
-local function parse_nth_child_expression(name, expression)
+local function parse_nth_expression(name, expression)
   local normalized_expression = normalize_expression(expression)
 
   if normalized_expression == "odd" then
@@ -358,7 +358,7 @@ end
 function methods.on_functional_pseudo_nth_child(self, name, expression)
   local xpath = self.xpaths[#self.xpaths]
 
-  local a, b = parse_nth_child_expression(name, expression)
+  local a, b = parse_nth_expression(name, expression)
   xpath = build_nth_xpath(xpath, a, b, "preceding-sibling", "")
 
   self.xpaths[#self.xpaths] = xpath
@@ -367,7 +367,7 @@ end
 function methods.on_functional_pseudo_nth_last_child(self, name, expression)
   local xpath = self.xpaths[#self.xpaths]
 
-  local a, b = parse_nth_child_expression(name, expression)
+  local a, b = parse_nth_expression(name, expression)
   xpath = build_nth_xpath(xpath, a, b, "following-sibling", "")
 
   self.xpaths[#self.xpaths] = xpath
@@ -376,8 +376,17 @@ end
 function methods.on_functional_pseudo_nth_of_type(self, name, expression)
   local xpath = self.xpaths[#self.xpaths]
 
-  local a, b = parse_nth_child_expression(name, expression)
+  local a, b = parse_nth_expression(name, expression)
   xpath = build_nth_xpath(xpath, a, b, "preceding-sibling", self.node_predicate)
+
+  self.xpaths[#self.xpaths] = xpath
+end
+
+function methods.on_functional_pseudo_nth_last_of_type(self, name, expression)
+  local xpath = self.xpaths[#self.xpaths]
+
+  local a, b = parse_nth_expression(name, expression)
+  xpath = build_nth_xpath(xpath, a, b, "following-sibling", self.node_predicate)
 
   self.xpaths[#self.xpaths] = xpath
 end
