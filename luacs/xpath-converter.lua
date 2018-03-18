@@ -464,6 +464,8 @@ end
 function XPathConverter.new()
   local converter = {
     xpaths = {},
+    combinator = nil,
+    node_predicate = nil,
   }
   setmetatable(converter, metatable)
   return converter
