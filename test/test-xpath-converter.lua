@@ -162,3 +162,9 @@ function TestXPathConverter.test_pseudo_class()
                           "pseudo-class isn't supported: <hover>")
 end
 
+function TestXPathConverter.test_functional_pseudo_lang()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:lang(ja)"),
+    {"/descendant-or-self::*[local-name()='p'][lang('ja')]"})
+end
+

@@ -2,6 +2,15 @@ local XPathConverter = {}
 
 local methods = {}
 
+local function string_value(raw_value)
+  local escaped_value, n_escaped =
+    raw_value:gsub("(['\\])",
+                   function(special_character)
+                     return "\\" .. special_character
+    end)
+  return "'" .. raw_value .. "'"
+end
+
 local metatable = {}
 function metatable.__index(parser, key)
   return methods[key]
@@ -143,6 +152,34 @@ end
 function methods.on_pseudo_class(self, name)
   error("Failed to convert to XPath: " ..
           "pseudo-class isn't supported: <" .. name .. ">")
+end
+
+function methods.on_functional_pseudo_lang(self, name, expression)
+  local xpath = self.xpaths[#self.xpaths]
+
+  if #expression ~= 1 then
+    error("Failed to convert to XPath: " .. name .. ": " ..
+            "wrong number of arguments: " ..
+            "(given " .. #expression .. ", expected 1)")
+  end
+  if expression[1][1] ~= "name" then
+    error("Failed to convert to XPath: " .. name .. ": " ..
+            "1st argument must be name: " ..
+            "<" .. expression[1][2] .. ">(" .. expression[1][1] .. ")")
+  end
+  xpath = xpath .. "[lang(" .. string_value(expression[1][2]) .. ")]"
+
+  self.xpaths[#self.xpaths] = xpath
+end
+
+function methods.on_functional_pseudo(self, name, expression)
+  local callback = methods["on_functional_pseudo_" .. name]
+  if callback then
+    callback(self, name, expression)
+  else
+    error("Failed to convert to XPath: " ..
+            "unsupported functional-pseudo: <" .. name .. ">")
+  end
 end
 
 function XPathConverter.new()
