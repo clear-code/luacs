@@ -148,7 +148,7 @@ function TestXPathConverter.test_attribute_suffix_match()
   luaunit.assertEquals(
     luacs.to_xpaths("[data-x$='xxx']"),
     {"/descendant::*" ..
-       "[@data-x][substring(@data-x, string-length(@data-x) - 3)='xxx']"})
+       "[@data-x][substring(@data-x, string-length(@data-x) - 2) = 'xxx']"})
 end
 
 function TestXPathConverter.test_attribute_substring_match()

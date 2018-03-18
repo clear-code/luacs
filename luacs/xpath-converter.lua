@@ -151,8 +151,8 @@ function methods.on_attribute(self,
   elseif operator == "$=" then
     xpath = xpath ..
       "[substring(@" .. name .. ", " ..
-      "string-length(@" .. name .. ") - " .. #value .. ")" ..
-      "=" .. string_value(value) .. "]"
+      "string-length(@" .. name .. ") - " .. (#value - 1) .. ")" ..
+      " = " .. string_value(value) .. "]"
   elseif operator == "*=" then
     xpath = xpath .. "[contains(@" .. name .. ", " .. string_value(value) .. ")]"
   elseif operator == "=" then
