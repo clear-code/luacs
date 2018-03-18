@@ -157,9 +157,20 @@ function methods.on_pseudo_element(self, name)
           "pseudo-element isn't supported: <" .. name .. ">")
 end
 
+function methods.on_pseudo_class_root(self, name)
+  local xpath = self.xpaths[#self.xpaths]
+  xpath = xpath .. "[not(parent::*)]"
+  self.xpaths[#self.xpaths] = xpath
+end
+
 function methods.on_pseudo_class(self, name)
-  error("Failed to convert to XPath: " ..
-          "pseudo-class isn't supported: <" .. name .. ">")
+  local callback = methods["on_pseudo_class_" .. name]
+  if callback then
+    callback(self, name)
+  else
+    error("Failed to convert to XPath: " ..
+            "unsupported pseudo-class: <" .. name .. ">")
+  end
 end
 
 function methods.on_functional_pseudo_lang(self, name, expression)

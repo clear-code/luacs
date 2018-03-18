@@ -159,7 +159,13 @@ end
 function TestXPathConverter.test_pseudo_class()
   assert_to_xpath_error("a:hover",
                         "Failed to convert to XPath: " ..
-                          "pseudo-class isn't supported: <hover>")
+                          "unsupported pseudo-class: <hover>")
+end
+
+function TestXPathConverter.test_pseudo_class_root()
+  luaunit.assertEquals(
+    luacs.to_xpaths("html:root"),
+    {"/descendant-or-self::*[local-name()='html'][not(parent::*)]"})
 end
 
 function TestXPathConverter.test_functional_pseudo_lang()
