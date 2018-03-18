@@ -252,10 +252,9 @@ function TestXPathConverter.test_pseudo_class_first_of_type()
 end
 
 function TestXPathConverter.test_pseudo_class_first_of_type_universal()
-  luaunit.assertEquals(
-    luacs.to_xpaths("*:first-of-type"),
-    {"/descendant::*" ..
-       "[count(preceding-sibling::*) = 0]"})
+  assert_to_xpath_error("*:first-of-type",
+                        "Failed to convert to XPath: *:first-of-type: " ..
+                          "unsupported pseudo-class")
 end
 
 function TestXPathConverter.test_pseudo_class_last_of_type()
@@ -266,10 +265,9 @@ function TestXPathConverter.test_pseudo_class_last_of_type()
 end
 
 function TestXPathConverter.test_pseudo_class_last_of_type_universal()
-  luaunit.assertEquals(
-    luacs.to_xpaths("*:last-of-type"),
-    {"/descendant::*" ..
-       "[count(following-sibling::*) = 0]"})
+  assert_to_xpath_error("*:last-of-type",
+                        "Failed to convert to XPath: *:last-of-type: " ..
+                          "unsupported pseudo-class")
 end
 
 function TestXPathConverter.test_pseudo_class_only_child()
@@ -594,6 +592,12 @@ function TestXPathConverter.test_functional_pseudo_nth_of_type_minus_3n_plus_5()
        "[count(preceding-sibling::*[local-name()='p']) mod -3 = -2]"})
 end
 
+function TestXPathConverter.test_functional_pseudo_nth_of_type_universal()
+  assert_to_xpath_error("*:nth-of-type(odd)",
+                        "Failed to convert to XPath: *:nth-of-type: " ..
+                          "unsupported functional-pseudo")
+end
+
 function TestXPathConverter.test_functional_pseudo_nth_last_of_type_number()
   luaunit.assertEquals(
     luacs.to_xpaths("p:nth-last-of-type(1)"),
@@ -688,6 +692,12 @@ function TestXPathConverter.test_functional_pseudo_nth_last_of_type_minus_3n_plu
     {"/descendant::*[local-name()='p']" ..
        "[count(following-sibling::*[local-name()='p']) <= 4]" ..
        "[count(following-sibling::*[local-name()='p']) mod -3 = -2]"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_last_of_type_universal()
+  assert_to_xpath_error("*:nth-last-of-type(odd)",
+                        "Failed to convert to XPath: *:nth-last-of-type: " ..
+                          "unsupported functional-pseudo")
 end
 
 function TestXPathConverter.test_functional_pseudo_negation()

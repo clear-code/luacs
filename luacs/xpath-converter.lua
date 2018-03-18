@@ -28,6 +28,7 @@ end
 
 function methods.on_start_simple_selector_sequence(self)
   self.need_node_test = true
+  self.node_predicate = ""
 end
 
 function methods.on_combinator(self, combinator)
@@ -200,6 +201,11 @@ function methods.on_pseudo_class_last_child(self, name)
 end
 
 function methods.on_pseudo_class_first_of_type(self, name)
+  if self.node_predicate == "" then
+    error("Failed to convert to XPath: *:" .. name .. ": " ..
+            "unsupported pseudo-class")
+  end
+
   local xpath = self.xpaths[#self.xpaths]
   xpath = xpath ..
     "[count(preceding-sibling::*" .. self.node_predicate .. ") = 0]"
@@ -207,6 +213,11 @@ function methods.on_pseudo_class_first_of_type(self, name)
 end
 
 function methods.on_pseudo_class_last_of_type(self, name)
+  if self.node_predicate == "" then
+    error("Failed to convert to XPath: *:" .. name .. ": " ..
+            "unsupported pseudo-class")
+  end
+
   local xpath = self.xpaths[#self.xpaths]
   xpath = xpath ..
     "[count(following-sibling::*" .. self.node_predicate .. ") = 0]"
@@ -440,6 +451,11 @@ function methods.on_functional_pseudo_nth_last_child(self, name, expression)
 end
 
 function methods.on_functional_pseudo_nth_of_type(self, name, expression)
+  if self.node_predicate == "" then
+    error("Failed to convert to XPath: *:" .. name .. ": " ..
+            "unsupported functional-pseudo")
+  end
+
   local xpath = self.xpaths[#self.xpaths]
 
   local a, b = parse_nth_expression(name, expression)
@@ -449,6 +465,11 @@ function methods.on_functional_pseudo_nth_of_type(self, name, expression)
 end
 
 function methods.on_functional_pseudo_nth_last_of_type(self, name, expression)
+  if self.node_predicate == "" then
+    error("Failed to convert to XPath: *:" .. name .. ": " ..
+            "unsupported functional-pseudo")
+  end
+
   local xpath = self.xpaths[#self.xpaths]
 
   local a, b = parse_nth_expression(name, expression)
