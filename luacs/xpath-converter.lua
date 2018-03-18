@@ -196,9 +196,15 @@ function methods.on_pseudo_class_last_of_type(self, name)
   self.xpaths[#self.xpaths] = xpath
 end
 
+function methods.on_pseudo_class_only_child(self, name)
+  local xpath = self.xpaths[#self.xpaths]
+  xpath = xpath .. "[count(parent::*/*) = 1]"
+  self.xpaths[#self.xpaths] = xpath
+end
+
 function methods.on_pseudo_class(self, name)
   local callback = methods["on_pseudo_class_" .. name:gsub("-", "_")]
-  if callback then
+  if not name:find("_") and callback then
     callback(self, name)
   else
     error("Failed to convert to XPath: " ..
@@ -419,7 +425,7 @@ end
 
 function methods.on_functional_pseudo(self, name, expression)
   local callback = methods["on_functional_pseudo_" .. name:gsub("-", "_")]
-  if callback then
+  if not name:find("_") and callback then
     callback(self, name, expression)
   else
     error("Failed to convert to XPath: " ..

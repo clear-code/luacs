@@ -203,6 +203,13 @@ function TestXPathConverter.test_pseudo_class_last_of_type()
        "[count(following-sibling::*[local-name()='p']) = 0]"})
 end
 
+function TestXPathConverter.test_pseudo_class_only_child()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:only-child"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[count(parent::*/*) = 1]"})
+end
+
 function TestXPathConverter.test_pseudo_class_last_of_type_universal()
   luaunit.assertEquals(
     luacs.to_xpaths("*:last-of-type"),
