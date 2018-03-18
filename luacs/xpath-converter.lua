@@ -26,11 +26,17 @@ function methods.on_start_selector(self)
   self.combinator = " "
 end
 
+function methods.on_start_simple_selector_sequence(self)
+  self.need_node_test = true
+end
+
 function methods.on_combinator(self, combinator)
   self.combinator = combinator
 end
 
 function methods.on_type_selector(self, namespace_prefix, element_name)
+  self.need_node_test = false
+
   local xpath = self.xpaths[#self.xpaths]
 
   local prefix
@@ -71,6 +77,8 @@ function methods.on_type_selector(self, namespace_prefix, element_name)
 end
 
 function methods.on_universal(self, namespace_prefix, element_name)
+  self.need_node_test = false
+
   local xpath = self.xpaths[#self.xpaths]
 
   local prefix
@@ -101,8 +109,8 @@ end
 
 function methods.on_hash(self, name)
   local xpath = self.xpaths[#self.xpaths]
-  if #xpath == 0 then
-    xpath = "/descendant::*"
+  if self.need_node_test then
+    xpath = xpath .. "/descendant::*"
   end
   xpath = xpath ..
     "[@id=" .. string_value(name) .. " or " ..
@@ -119,8 +127,8 @@ end
 
 function methods.on_class(self, name)
   local xpath = self.xpaths[#self.xpaths]
-  if #xpath == 0 then
-    xpath = "/descendant::*"
+  if self.need_node_test then
+    xpath = xpath .. "/descendant::*"
   end
   xpath = attribute_include(xpath .. "[@class]", "class", name)
   self.xpaths[#self.xpaths] = xpath
@@ -140,8 +148,8 @@ function methods.on_attribute(self,
     name = attribute_name
   end
 
-  if #xpath == 0 then
-    xpath = "/descendant::*"
+  if self.need_node_test then
+    xpath = xpath .. "/descendant::*"
   end
   xpath = xpath .. "[@" .. name .. "]"
   if operator == "^=" then
@@ -227,8 +235,8 @@ function methods.on_pseudo_class(self, name)
   local callback = methods["on_pseudo_class_" .. name:gsub("-", "_")]
   if not name:find("_") and callback then
     local xpath = self.xpaths[#self.xpaths]
-    if #xpath == 0 then
-      xpath = "/descendant::*"
+    if self.need_node_test then
+      xpath = xpath .. "/descendant::*"
     end
     self.xpaths[#self.xpaths] = xpath
     callback(self, name)
@@ -453,8 +461,8 @@ function methods.on_functional_pseudo(self, name, expression)
   local callback = methods["on_functional_pseudo_" .. name:gsub("-", "_")]
   if not name:find("_") and callback then
     local xpath = self.xpaths[#self.xpaths]
-    if #xpath == 0 then
-      xpath = "/descendant::*"
+    if self.need_node_test then
+      xpath = xpath .. "/descendant::*"
     end
     self.xpaths[#self.xpaths] = xpath
     callback(self, name, expression)
@@ -467,9 +475,10 @@ end
 function methods.on_start_negation(self)
   local xpath = self.xpaths[#self.xpaths]
 
-  if #xpath == 0 then
-    xpath = "/descendant::*"
+  if self.need_node_test then
+    xpath = xpath .. "/descendant::*"
   end
+  self.need_node_test = false
   xpath = xpath .. "[not(self::node()"
 
   self.xpaths[#self.xpaths] = xpath

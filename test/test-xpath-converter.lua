@@ -230,6 +230,13 @@ function TestXPathConverter.test_pseudo_class_first_child()
        "[count(preceding-sibling::*) = 0]"})
 end
 
+function TestXPathConverter.test_pseudo_class_first_child_nested()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p :first-child"),
+    {"/descendant::*[local-name()='p']" ..
+       "/descendant::*[count(preceding-sibling::*) = 0]"})
+end
+
 function TestXPathConverter.test_pseudo_class_last_child()
   luaunit.assertEquals(
     luacs.to_xpaths("p:last-child"),
