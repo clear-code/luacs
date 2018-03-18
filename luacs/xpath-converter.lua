@@ -101,6 +101,9 @@ end
 
 function methods.on_hash(self, name)
   local xpath = self.xpaths[#self.xpaths]
+  if #xpath == 0 then
+    xpath = "/descendant::*"
+  end
   xpath = xpath ..
     "[@id=" .. string_value(name) .. " or " ..
     "@name=" .. string_value(name) .. "]"
@@ -116,6 +119,9 @@ end
 
 function methods.on_class(self, name)
   local xpath = self.xpaths[#self.xpaths]
+  if #xpath == 0 then
+    xpath = "/descendant::*"
+  end
   xpath = attribute_include(xpath .. "[@class]", "class", name)
   self.xpaths[#self.xpaths] = xpath
 end
@@ -134,6 +140,9 @@ function methods.on_attribute(self,
     name = attribute_name
   end
 
+  if #xpath == 0 then
+    xpath = "/descendant::*"
+  end
   xpath = xpath .. "[@" .. name .. "]"
   if operator == "^=" then
     xpath = xpath ..
@@ -217,6 +226,11 @@ end
 function methods.on_pseudo_class(self, name)
   local callback = methods["on_pseudo_class_" .. name:gsub("-", "_")]
   if not name:find("_") and callback then
+    local xpath = self.xpaths[#self.xpaths]
+    if #xpath == 0 then
+      xpath = "/descendant::*"
+    end
+    self.xpaths[#self.xpaths] = xpath
     callback(self, name)
   else
     error("Failed to convert to XPath: " ..
@@ -438,6 +452,11 @@ end
 function methods.on_functional_pseudo(self, name, expression)
   local callback = methods["on_functional_pseudo_" .. name:gsub("-", "_")]
   if not name:find("_") and callback then
+    local xpath = self.xpaths[#self.xpaths]
+    if #xpath == 0 then
+      xpath = "/descendant::*"
+    end
+    self.xpaths[#self.xpaths] = xpath
     callback(self, name, expression)
   else
     error("Failed to convert to XPath: " ..
@@ -448,6 +467,9 @@ end
 function methods.on_start_negation(self)
   local xpath = self.xpaths[#self.xpaths]
 
+  if #xpath == 0 then
+    xpath = "/descendant::*"
+  end
   xpath = xpath .. "[not(self::node()"
 
   self.xpaths[#self.xpaths] = xpath

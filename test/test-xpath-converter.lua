@@ -99,11 +99,25 @@ end
 
 function TestXPathConverter.test_hash()
   luaunit.assertEquals(
+    luacs.to_xpaths("#main"),
+    {"/descendant::*[@id='main' or @name='main']"})
+end
+
+function TestXPathConverter.test_hash_type_selector()
+  luaunit.assertEquals(
     luacs.to_xpaths("div#main"),
     {"/descendant::*[local-name()='div'][@id='main' or @name='main']"})
 end
 
 function TestXPathConverter.test_class()
+  luaunit.assertEquals(
+    luacs.to_xpaths(".main"),
+    {"/descendant::*" ..
+       "[@class]" ..
+       "[contains(concat(' ', normalize-space(@class), ' '), ' main ')]"})
+end
+
+function TestXPathConverter.test_class_type_selector()
   luaunit.assertEquals(
     luacs.to_xpaths("div.main"),
     {"/descendant::*[local-name()='div']" ..
@@ -113,66 +127,90 @@ end
 
 function TestXPathConverter.test_attribute()
   luaunit.assertEquals(
+    luacs.to_xpaths("[data-x]"),
+    {"/descendant::*[@data-x]"})
+end
+
+function TestXPathConverter.test_class_type_selector()
+  luaunit.assertEquals(
     luacs.to_xpaths("div[data-x]"),
     {"/descendant::*[local-name()='div'][@data-x]"})
 end
 
 function TestXPathConverter.test_attribute_prefix_match()
   luaunit.assertEquals(
-    luacs.to_xpaths("div[data-x^='xxx']"),
-    {"/descendant::*[local-name()='div']" ..
+    luacs.to_xpaths("[data-x^='xxx']"),
+    {"/descendant::*" ..
        "[@data-x][starts-with(@data-x, 'xxx')]"})
 end
 
 function TestXPathConverter.test_attribute_suffix_match()
   luaunit.assertEquals(
-    luacs.to_xpaths("div[data-x$='xxx']"),
-    {"/descendant::*[local-name()='div']" ..
+    luacs.to_xpaths("[data-x$='xxx']"),
+    {"/descendant::*" ..
        "[@data-x][substring(@data-x, string-length(@data-x) - 3)='xxx']"})
 end
 
 function TestXPathConverter.test_attribute_substring_match()
   luaunit.assertEquals(
-    luacs.to_xpaths("div[data-x*='xxx']"),
-    {"/descendant::*[local-name()='div']" ..
+    luacs.to_xpaths("[data-x*='xxx']"),
+    {"/descendant::*" ..
        "[@data-x][contains(@data-x, 'xxx')]"})
 end
 
 function TestXPathConverter.test_attribute_equal()
   luaunit.assertEquals(
-    luacs.to_xpaths("div[data-x='xxx']"),
-    {"/descendant::*[local-name()='div']" ..
+    luacs.to_xpaths("[data-x='xxx']"),
+    {"/descendant::*" ..
        "[@data-x][@data-x='xxx']"})
 end
 
 function TestXPathConverter.test_attribute_include()
   luaunit.assertEquals(
-    luacs.to_xpaths("div[data-x~='xxx']"),
-    {"/descendant::*[local-name()='div']" ..
+    luacs.to_xpaths("[data-x~='xxx']"),
+    {"/descendant::*" ..
        "[@data-x]" ..
        "[contains(concat(' ', normalize-space(@data-x), ' '), ' xxx ')]"})
 end
 
 function TestXPathConverter.test_attribute_dash_match()
   luaunit.assertEquals(
-    luacs.to_xpaths("div[xml|lang|='ja']"),
-    {"/descendant::*[local-name()='div']" ..
+    luacs.to_xpaths("[xml|lang|='ja']"),
+    {"/descendant::*" ..
        "[@xml:lang][@xml:lang='ja' or starts-with(@xml:lang, 'ja-')]"})
 end
 
 function TestXPathConverter.test_pseudo_element()
+  assert_to_xpath_error("::before",
+                        "Failed to convert to XPath: " ..
+                          "pseudo-element isn't supported: <before>")
+end
+
+function TestXPathConverter.test_pseudo_element_type_selector()
   assert_to_xpath_error("div::before",
                         "Failed to convert to XPath: " ..
                           "pseudo-element isn't supported: <before>")
 end
 
 function TestXPathConverter.test_pseudo_class()
+  assert_to_xpath_error(":hover",
+                        "Failed to convert to XPath: " ..
+                          "unsupported pseudo-class: <hover>")
+end
+
+function TestXPathConverter.test_pseudo_class_type_selector()
   assert_to_xpath_error("a:hover",
                         "Failed to convert to XPath: " ..
                           "unsupported pseudo-class: <hover>")
 end
 
 function TestXPathConverter.test_pseudo_class_root()
+  luaunit.assertEquals(
+    luacs.to_xpaths(":root"),
+    {"/descendant::*[not(parent::*)]"})
+end
+
+function TestXPathConverter.test_pseudo_class_root_type_selector()
   luaunit.assertEquals(
     luacs.to_xpaths("html:root"),
     {"/descendant::*[local-name()='html'][not(parent::*)]"})
@@ -640,7 +678,15 @@ end
 
 function TestXPathConverter.test_functional_pseudo_negation()
   luaunit.assertEquals(
+    luacs.to_xpaths(":not([class])"),
+    {"/descendant::*" ..
+       "[not(self::node()[@class])]"})
+end
+
+function TestXPathConverter.test_functional_pseudo_negation_type_selector()
+  luaunit.assertEquals(
     luacs.to_xpaths("p:not([class])"),
     {"/descendant::*[local-name()='p']" ..
        "[not(self::node()[@class])]"})
 end
+
