@@ -174,3 +174,89 @@ function TestXPathConverter.test_functional_pseudo_lang()
     {"/descendant-or-self::*[local-name()='p'][lang('ja')]"})
 end
 
+function TestXPathConverter.test_functional_pseudo_nth_child_number()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(1)"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[count(preceding-sibling::*) = 0]"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_child_odd()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(odd)"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[count(preceding-sibling::*) mod 2 = 0]"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_child_even()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(even)"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[count(preceding-sibling::*) mod 2 = 1]"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_child_1n()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(1n)"),
+    {"/descendant-or-self::*[local-name()='p']"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_child_n_2()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(n + 2)"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[count(preceding-sibling::*) >= 1]"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_child_n_minus_2()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(n - 2)"),
+    {"/descendant-or-self::*[local-name()='p']"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_child_minus_n()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(-n)"),
+    {"/descendant-or-self::*[local-name()='p'][0]"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_child_minus_n_2()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(-n + 2)"),
+    {"/descendant-or-self::*[local-name()='p'][0]"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_child_minus_n_minus_2()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(-n - 2)"),
+    {"/descendant-or-self::*[local-name()='p'][0]"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_child_3n()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(3n)"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[count(preceding-sibling::*) mod 3 = 2]"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_child_3n_1()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(3n+1)"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[count(preceding-sibling::*) mod 3 = 0]"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_child_3n_2()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(3n+2)"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[count(preceding-sibling::*) >= 1]" ..
+       "[count(preceding-sibling::*) mod 3 = 1]"})
+end
+
+function TestXPathConverter.test_functional_pseudo_nth_child_plus_3n_minus_2()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:nth-child(+3n-2)"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[count(preceding-sibling::*) mod 3 = 0]"})
+end
