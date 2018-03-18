@@ -170,8 +170,14 @@ function methods.on_pseudo_class_root(self, name)
   self.xpaths[#self.xpaths] = xpath
 end
 
+function methods.on_pseudo_class_first_child(self, name)
+  local xpath = self.xpaths[#self.xpaths]
+  xpath = xpath .. "[count(preceding-sibling::*) = 0]"
+  self.xpaths[#self.xpaths] = xpath
+end
+
 function methods.on_pseudo_class(self, name)
-  local callback = methods["on_pseudo_class_" .. name]
+  local callback = methods["on_pseudo_class_" .. name:gsub("-", "_")]
   if callback then
     callback(self, name)
   else
@@ -392,8 +398,7 @@ function methods.on_functional_pseudo_nth_last_of_type(self, name, expression)
 end
 
 function methods.on_functional_pseudo(self, name, expression)
-  local normalized_name, _ = name:gsub("-", "_")
-  local callback = methods["on_functional_pseudo_" .. normalized_name]
+  local callback = methods["on_functional_pseudo_" .. name:gsub("-", "_")]
   if callback then
     callback(self, name, expression)
   else
