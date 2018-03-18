@@ -11,6 +11,16 @@ local function assert_to_xpath_error(css_selector_groups, expected_message)
                        expected_message)
 end
 
+function TestXPathConverter.test_selectors_group()
+  luaunit.assertEquals(
+    luacs.to_xpaths("ul, ol"),
+    {
+      "/descendant-or-self::*[local-name()='ul']",
+      "/descendant-or-self::*[local-name()='ol']",
+    }
+  )
+end
+
 function TestXPathConverter.test_combinator_plus()
   luaunit.assertEquals(
     luacs.to_xpaths("ul + li"),
