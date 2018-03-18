@@ -9,8 +9,8 @@ end
 
 function methods.inspect(self)
   return
-    self.data:sub(1, self.position) .. "|@|" ..
-    self.data:sub(self.position + 1)
+    self.data:sub(1, self.position - 1) .. "|@|" ..
+    self.data:sub(self.position)
 end
 
 function methods.peek(self)

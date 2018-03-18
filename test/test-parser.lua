@@ -94,6 +94,35 @@ function parse(selectors_group)
   return events
 end
 
+local function assert_parse_error(css_selector_groups, expected_message)
+  local success, actual_message = pcall(parse, css_selector_groups)
+  luaunit.failIf(success,
+                 "Must be fail to parse: <" .. css_selector_groups .. ">")
+  luaunit.assertEquals(actual_message:gsub("^.+:%d+: ", ""),
+                       expected_message)
+end
+
+function TestParser.test_error_no_selector()
+  assert_parse_error("1 2 3",
+                     "Failed to parse CSS selectors group: " ..
+                       "must have at least one selector: " ..
+                       "<|@|1 2 3>")
+end
+
+function TestParser.test_error_no_selector()
+  assert_parse_error("ul,  ",
+                     "Failed to parse CSS selectors group: " ..
+                       "must have selector after ',': " ..
+                       "<ul,  |@|>")
+end
+
+function TestParser.test_error_garbage()
+  assert_parse_error("ul 1 2 3",
+                     "Failed to parse CSS selectors group: " ..
+                       "there is garbage after selectors group: " ..
+                       "<ul |@|1 2 3>")
+end
+
 function TestParser.test_selectors_group()
   luaunit.assertEquals(parse("ul, ol"),
                        {
