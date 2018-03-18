@@ -41,7 +41,7 @@ function methods.on_type_selector(self, namespace_prefix, element_name)
   elseif self.combinator == "~" then
     prefix = "/following-sibling::"
   elseif self.combinator == " " then
-    prefix = "/descendant-or-self::"
+    prefix = "/descendant::"
   end
 
   if namespace_prefix == nil or namespace_prefix == "*" then
@@ -81,7 +81,7 @@ function methods.on_universal(self, namespace_prefix, element_name)
   elseif self.combinator == "~" then
     prefix = "/following-sibling::*"
   elseif self.combinator == " " then
-    prefix = "/descendant-or-self::*"
+    prefix = "/descendant::*"
   end
 
   if namespace_prefix == nil or namespace_prefix == "*" then
