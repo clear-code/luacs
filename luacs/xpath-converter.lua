@@ -7,7 +7,7 @@ local function string_value(raw_value)
     raw_value:gsub("(['\\])",
                    function(special_character)
                      return "\\" .. special_character
-    end)
+                   end)
   return "'" .. raw_value .. "'"
 end
 
@@ -43,17 +43,21 @@ function methods.on_type_selector(self, namespace_prefix, element_name)
     if prefix:sub(#prefix) ~= "]" then
       prefix = prefix .. "*"
     end
-    xpath = xpath .. prefix .. "[local-name()='" .. element_name .. "']"
+    xpath = xpath ..
+      prefix ..
+      "[local-name()=" .. string_value(element_name) .. "]"
   elseif namespace_prefix == "" then
     if prefix:sub(#prefix) == "]" then
-      xpath = xpath .. prefix .. "[name()='" .. element_name .. "']"
+      xpath = xpath ..
+        prefix ..
+        "[name()=" .. string_value(element_name) .. "]"
     else
       xpath = xpath .. prefix .. element_name
     end
   else
     local name = namespace_prefix .. ":" .. element_name
     if prefix:sub(#prefix) == "]" then
-      xpath = xpath .. prefix .. "[name()='" .. name .. "']"
+      xpath = xpath .. prefix .. "[name()=" .. string_value(name) .. "]"
     else
       xpath = xpath .. prefix .. name
     end
@@ -82,7 +86,7 @@ function methods.on_universal(self, namespace_prefix, element_name)
     xpath = xpath .. prefix .. "[namespace-uri()='']"
   else
     xpath = xpath .. prefix ..
-      "[starts-with(name(), '" .. namespace_prefix .. "')]"
+      "[starts-with(name(), " .. string_value(namespace_prefix) .. ")]"
   end
 
   self.xpaths[#self.xpaths] = xpath
@@ -90,7 +94,9 @@ end
 
 function methods.on_hash(self, name)
   local xpath = self.xpaths[#self.xpaths]
-  xpath = xpath .. "[@id='" .. name .. "' or @name='" .. name .. "']"
+  xpath = xpath ..
+    "[@id=" .. string_value(name) .. " or " ..
+    "@name=" .. string_value(name) .. "]"
   self.xpaths[#self.xpaths] = xpath
 end
 
@@ -98,7 +104,7 @@ local function attribute_include(xpath, name, value)
   return xpath ..
     "[contains(" ..
     "concat(' ', normalize-space(@" .. name .. "), ' '), " ..
-    "' " .. value .. " ')]"
+    string_value(" " .. value .. " ") .. ")]"
 end
 
 function methods.on_class(self, name)
@@ -123,22 +129,24 @@ function methods.on_attribute(self,
 
   xpath = xpath .. "[@" .. name .. "]"
   if operator == "^=" then
-    xpath = xpath .. "[starts-with(@" .. name .. ", '" .. value .. "')]"
+    xpath = xpath ..
+      "[starts-with(@" .. name .. ", " ..
+      string_value(value) .. ")]"
   elseif operator == "$=" then
     xpath = xpath ..
       "[substring(@" .. name .. ", " ..
       "string-length(@" .. name .. ") - " .. #value .. ")" ..
-      "='" .. value .. "']"
+      "=" .. string_value(value) .. "]"
   elseif operator == "*=" then
-    xpath = xpath .. "[contains(@" .. name .. ", '" .. value .. "')]"
+    xpath = xpath .. "[contains(@" .. name .. ", " .. string_value(value) .. ")]"
   elseif operator == "=" then
-    xpath = xpath .. "[@" .. name .. "='" .. value .. "']"
+    xpath = xpath .. "[@" .. name .. "=" .. string_value(value) .. "]"
   elseif operator == "~=" then
     xpath = attribute_include(xpath, name, value)
   elseif operator == "|=" then
     xpath = xpath ..
-      "[@" .. name .. "='" .. value .. "' or " ..
-      "starts-with(@" .. name .. ", '" .. value .. "-')]"
+      "[@" .. name .. "=" .. string_value(value) .. " or " ..
+      "starts-with(@" .. name .. ", " .. string_value(value .. "-") .. ")]"
   end
 
   self.xpaths[#self.xpaths] = xpath
