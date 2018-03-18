@@ -196,6 +196,20 @@ function TestXPathConverter.test_pseudo_class_first_of_type_universal()
        "[count(preceding-sibling::*) = 0]"})
 end
 
+function TestXPathConverter.test_pseudo_class_last_of_type()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:last-of-type"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[count(following-sibling::*[local-name()='p']) = 0]"})
+end
+
+function TestXPathConverter.test_pseudo_class_last_of_type_universal()
+  luaunit.assertEquals(
+    luacs.to_xpaths("*:last-of-type"),
+    {"/descendant-or-self::*" ..
+       "[count(following-sibling::*) = 0]"})
+end
+
 function TestXPathConverter.test_functional_pseudo_lang()
   luaunit.assertEquals(
     luacs.to_xpaths("p:lang(ja)"),

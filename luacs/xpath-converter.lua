@@ -189,6 +189,13 @@ function methods.on_pseudo_class_first_of_type(self, name)
   self.xpaths[#self.xpaths] = xpath
 end
 
+function methods.on_pseudo_class_last_of_type(self, name)
+  local xpath = self.xpaths[#self.xpaths]
+  xpath = xpath ..
+    "[count(following-sibling::*" .. self.node_predicate .. ") = 0]"
+  self.xpaths[#self.xpaths] = xpath
+end
+
 function methods.on_pseudo_class(self, name)
   local callback = methods["on_pseudo_class_" .. name:gsub("-", "_")]
   if callback then
