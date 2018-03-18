@@ -208,6 +208,12 @@ function methods.on_pseudo_class_only_of_type(self, name)
   self.xpaths[#self.xpaths] = xpath
 end
 
+function methods.on_pseudo_class_empty(self, name)
+  local xpath = self.xpaths[#self.xpaths]
+  xpath = xpath .. "[not(node())]"
+  self.xpaths[#self.xpaths] = xpath
+end
+
 function methods.on_pseudo_class(self, name)
   local callback = methods["on_pseudo_class_" .. name:gsub("-", "_")]
   if not name:find("_") and callback then

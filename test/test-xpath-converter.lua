@@ -231,6 +231,13 @@ function TestXPathConverter.test_pseudo_class_only_of_type_universal()
        "[count(parent::*/*) = 1]"})
 end
 
+function TestXPathConverter.test_pseudo_class_empty()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:empty"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[not(node())]"})
+end
+
 function TestXPathConverter.test_functional_pseudo_lang()
   luaunit.assertEquals(
     luacs.to_xpaths("p:lang(ja)"),
