@@ -48,21 +48,20 @@ function methods.on_type_selector(self, namespace_prefix, element_name)
     if prefix:sub(#prefix) ~= "]" then
       prefix = prefix .. "*"
     end
-    xpath = xpath ..
-      prefix ..
-      "[local-name()=" .. string_value(element_name) .. "]"
+    self.node_predicate = "[local-name()=" .. string_value(element_name) .. "]"
+    xpath = xpath .. prefix .. self.node_predicate
   elseif namespace_prefix == "" then
+    self.node_predicate = "[name()=" .. string_value(element_name) .. "]"
     if prefix:sub(#prefix) == "]" then
-      xpath = xpath ..
-        prefix ..
-        "[name()=" .. string_value(element_name) .. "]"
+      xpath = xpath .. prefix .. self.node_predicate
     else
       xpath = xpath .. prefix .. element_name
     end
   else
     local name = namespace_prefix .. ":" .. element_name
+    self.node_predicate = "[name()=" .. string_value(element_name) .. "]"
     if prefix:sub(#prefix) == "]" then
-      xpath = xpath .. prefix .. "[name()=" .. string_value(name) .. "]"
+      xpath = xpath .. prefix .. self.node_predicate
     else
       xpath = xpath .. prefix .. name
     end
@@ -86,12 +85,15 @@ function methods.on_universal(self, namespace_prefix, element_name)
   end
 
   if namespace_prefix == nil or namespace_prefix == "*" then
+    self.node_predicate = ""
     xpath = xpath .. prefix
   elseif namespace_prefix == "" then
-    xpath = xpath .. prefix .. "[namespace-uri()='']"
+    self.node_predicate = "[namespace-uri()='']"
+    xpath = xpath .. prefix .. self.node_predicate
   else
-    xpath = xpath .. prefix ..
+    self.node_predicate =
       "[starts-with(name(), " .. string_value(namespace_prefix) .. ")]"
+    xpath = xpath .. prefix .. self.node_predicate
   end
 
   self.xpaths[#self.xpaths] = xpath
@@ -325,16 +327,16 @@ local function parse_nth_child_expression(name, expression)
           "invalid N: <" .. normalized_expression .. ">")
 end
 
-local function build_nth_child_xpath(xpath, a, b, axis)
+local function build_nth_xpath(xpath, a, b, axis, node_predicate)
+  local n_siblings = "count(" .. axis .. "::*" .. node_predicate .. ")"
   if a == 0 then
-    xpath = xpath .. "[count(" .. axis .. "::*) = " .. (b - 1) .. "]"
+    xpath = xpath .. "[" .. n_siblings .. " = " .. (b - 1) .. "]"
   elseif a < 0 then
     if b > 1 then
-      xpath = xpath .. "[count(" .. axis .. "::*) <= " .. (b - 1) .. "]"
+      xpath = xpath .. "[" .. n_siblings .. " <= " .. (b - 1) .. "]"
       if a < -1 then
         local mod = (b - 1) % a
-        xpath = xpath ..
-          "[count(" .. axis .. "::*) mod " .. a .. " = " .. mod .. "]"
+        xpath = xpath .. "[" .. n_siblings .. " mod " .. a .. " = " .. mod .. "]"
       end
     else
       -- never match
@@ -342,12 +344,11 @@ local function build_nth_child_xpath(xpath, a, b, axis)
     end
   else
     if b > 1 then
-      xpath = xpath .. "[count(" .. axis .. "::*) >= " .. (b - 1) .. "]"
+      xpath = xpath .. "[" .. n_siblings .. " >= " .. (b - 1) .. "]"
     end
     if a > 1 then
       local mod = (b - 1) % a
-      xpath = xpath ..
-        "[count(" .. axis .. "::*) mod " .. a .. " = " .. mod .. "]"
+      xpath = xpath .. "[" .. n_siblings .. " mod " .. a .. " = " .. mod .. "]"
     end
   end
 
@@ -358,7 +359,7 @@ function methods.on_functional_pseudo_nth_child(self, name, expression)
   local xpath = self.xpaths[#self.xpaths]
 
   local a, b = parse_nth_child_expression(name, expression)
-  xpath = build_nth_child_xpath(xpath, a, b, "preceding-sibling")
+  xpath = build_nth_xpath(xpath, a, b, "preceding-sibling", "")
 
   self.xpaths[#self.xpaths] = xpath
 end
@@ -367,7 +368,16 @@ function methods.on_functional_pseudo_nth_last_child(self, name, expression)
   local xpath = self.xpaths[#self.xpaths]
 
   local a, b = parse_nth_child_expression(name, expression)
-  xpath = build_nth_child_xpath(xpath, a, b, "following-sibling")
+  xpath = build_nth_xpath(xpath, a, b, "following-sibling", "")
+
+  self.xpaths[#self.xpaths] = xpath
+end
+
+function methods.on_functional_pseudo_nth_of_type(self, name, expression)
+  local xpath = self.xpaths[#self.xpaths]
+
+  local a, b = parse_nth_child_expression(name, expression)
+  xpath = build_nth_xpath(xpath, a, b, "preceding-sibling", self.node_predicate)
 
   self.xpaths[#self.xpaths] = xpath
 end
