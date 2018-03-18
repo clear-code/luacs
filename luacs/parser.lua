@@ -483,7 +483,9 @@ local function selectors_group(parser)
   source:match_whitespaces()
   on(parser, "start_selectors_group")
   if not selector(parser) then
-    return false
+    error("Failed to parse CSS selectors group: " ..
+            "must have at least one selector: " ..
+            "<" .. parser.source:inspect() .. ">")
   end
   while true do
     source:match_whitespaces()
@@ -492,19 +494,22 @@ local function selectors_group(parser)
     end
     source:match_whitespaces()
     if not selector(parser) then
-      return false
+      error("Failed to parse CSS selectors group: " ..
+              "must have selector after ',': " ..
+              "<" .. parser.source:inspect() .. ">")
     end
   end
   source:match_whitespaces()
-  local success = (#source.data == source.position - 1)
-  if success then
-    on(parser, "end_selectors_group")
+  if #source.data ~= source.position - 1 then
+    error("Failed to parse CSS selectors group: " ..
+            "there is garbage after selectors group: " ..
+            "<" .. parser.source:inspect() .. ">")
   end
-  return success
+  on(parser, "end_selectors_group")
 end
 
 function methods.parse(self)
-  return selectors_group(self)
+  selectors_group(self)
 end
 
 function Parser.new(input, listener)

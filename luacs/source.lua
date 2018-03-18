@@ -7,6 +7,12 @@ function metatable.__index(parser, key)
   return methods[key]
 end
 
+function methods.inspect(self)
+  return
+    self.data:sub(1, self.position) .. "|@|" ..
+    self.data:sub(self.position + 1)
+end
+
 function methods.peek(self)
   return self.data[self.position]
 end
