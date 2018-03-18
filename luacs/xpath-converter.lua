@@ -445,6 +445,22 @@ function methods.on_functional_pseudo(self, name, expression)
   end
 end
 
+function methods.on_start_negation(self)
+  local xpath = self.xpaths[#self.xpaths]
+
+  xpath = xpath .. "[not(self::node()"
+
+  self.xpaths[#self.xpaths] = xpath
+end
+
+function methods.on_end_negation(self)
+  local xpath = self.xpaths[#self.xpaths]
+
+  xpath = xpath .. ")]"
+
+  self.xpaths[#self.xpaths] = xpath
+end
+
 function XPathConverter.new()
   local converter = {
     xpaths = {},

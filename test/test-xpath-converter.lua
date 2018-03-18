@@ -627,3 +627,10 @@ function TestXPathConverter.test_functional_pseudo_nth_last_of_type_minus_3n_plu
        "[count(following-sibling::*[local-name()='p']) <= 4]" ..
        "[count(following-sibling::*[local-name()='p']) mod -3 = -2]"})
 end
+
+function TestXPathConverter.test_functional_pseudo_negation()
+  luaunit.assertEquals(
+    luacs.to_xpaths("p:not([class])"),
+    {"/descendant-or-self::*[local-name()='p']" ..
+       "[not(self::node()[@class])]"})
+end

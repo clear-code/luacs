@@ -77,10 +77,10 @@ function parse(selectors_group)
                    expression = expression,
     })
   end
-  listener.on_start_negation = function(self, name, expression)
+  listener.on_start_negation = function(self)
     table.insert(events, "start_negation")
   end
-  listener.on_end_negation = function(self, name, expression)
+  listener.on_end_negation = function(self)
     table.insert(events, "end_negation")
   end
   listener.on_combinator = function(self, combinator)
