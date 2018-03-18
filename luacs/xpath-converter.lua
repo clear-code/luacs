@@ -59,11 +59,11 @@ function methods.on_type_selector(self, namespace_prefix, element_name)
     end
   else
     local name = namespace_prefix .. ":" .. element_name
-    self.node_predicate = "[name()=" .. string_value(element_name) .. "]"
+    self.node_predicate = "[name()=" .. string_value(name) .. "]"
     if prefix:sub(#prefix) == "]" then
       xpath = xpath .. prefix .. self.node_predicate
     else
-      xpath = xpath .. prefix .. name
+      xpath = xpath .. prefix .. "*" .. self.node_predicate
     end
   end
 

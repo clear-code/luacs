@@ -58,7 +58,7 @@ end
 function TestXPathConverter.test_type_selector_namespace_prefix_name()
   luaunit.assertEquals(
     luacs.to_xpaths("xhtml|ul"),
-    {"/descendant-or-self::xhtml:ul"})
+    {"/descendant-or-self::*[name()='xhtml:ul']"})
 end
 
 function TestXPathConverter.test_type_selector_namespace_prefix_star()
