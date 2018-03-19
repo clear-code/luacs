@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid ""
+"---\n"
+"title: luacs.Parser\n"
+"---"
+msgstr ""
+
+msgid "# `luacs.Parser` class"
+msgstr ""
+
+msgid "## Summary"
+msgstr ""
+
+msgid "It's a class for parsing CSS Selectors."
+msgstr ""
+
+msgid "TODO"
+msgstr ""
+
+msgid "## Class methods"
+msgstr ""
+
+msgid "## Instance methods"
+msgstr ""

@@ -1,0 +1,9 @@
+.*.swp
+*.edit.po
+*.edit.po~
+*.pot
+*.time_stamp
+*.rock
+/docs/.sass-cache/
+/docs/_site/
+/docs/_po/*.po

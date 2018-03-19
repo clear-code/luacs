@@ -1,0 +1,59 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid ""
+"---\n"
+"title: Reference manual\n"
+"---"
+msgstr ""
+
+msgid "# Reference manual"
+msgstr ""
+
+msgid ""
+"This document describes about all features. [Tutorial][tutorial] focuses on ea"
+"sy to understand only about important features. This document focuses on compl"
+"eteness. If you don't read [tutorial][tutorial] yet, read tutorial before read"
+" this document."
+msgstr ""
+
+msgid "## Modules {#modules}"
+msgstr ""
+
+msgid "LuaCS has only one public modules. It's `luacs` main module."
+msgstr ""
+
+msgid "  * [`luacs`][luacs]: The main module."
+msgstr ""
+
+msgid "## Classes {#classes}"
+msgstr ""
+
+msgid "LuaCS provides the following classes:"
+msgstr ""
+
+msgid "  * [`luacs.Parser`][parser]: The class for parsing CSS Selectors."
+msgstr ""
+
+msgid ""
+"  * [`luacs.XPathConverter`][xpath-converter]: The class to convert CSS Select"
+"ors to XPaths."
+msgstr ""
+
+msgid "[tutorial]:../tutorial/"
+msgstr ""
+
+msgid "[luacs]:luacs.html"
+msgstr ""
+
+msgid "[parser]:parser.html"
+msgstr ""
+
+msgid "[xpath-converter]:xpath-converter.html"
+msgstr ""
