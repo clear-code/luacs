@@ -4,7 +4,7 @@ title: luacs.Parser
 
 # `luacs.Parser` class
 
-## Summary
+## 概要
 
 It's a class for parsing CSS Selectors.
 

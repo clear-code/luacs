@@ -4,7 +4,7 @@ title: luacs.XPathConverter
 
 # `luacs.XPathConverter` class
 
-## Summary
+## 概要
 
 It's a class for converting CSS Selectors to XPaths.
 

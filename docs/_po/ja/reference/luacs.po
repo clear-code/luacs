@@ -14,25 +14,25 @@ msgid ""
 msgstr ""
 
 msgid "# `luacs` module"
-msgstr ""
+msgstr "# `luacs`モジュール"
 
 msgid "## Summary"
-msgstr ""
+msgstr "## 概要"
 
 msgid "It's the main module."
-msgstr ""
+msgstr "メインモジュールです。"
 
 msgid "## Module functions"
-msgstr ""
+msgstr "## モジュール関数"
 
 msgid "### `to_xpaths(css_selectors_group) -> {xpath1, xpath2, ...}` {#to-xpaths}"
 msgstr ""
 
 msgid "It converts CSS Selectors to one or more XPaths."
-msgstr ""
+msgstr "CSSセレクターを1つ以上のXPathに変換します。"
 
 msgid "Example:"
-msgstr ""
+msgstr "例："
 
 msgid ""
 "```lua\n"
@@ -43,6 +43,8 @@ msgid ""
 "-- Convert CSS Selectors to XPaths\n"
 "local xpaths = luacs.to_xpaths(\"ul li, a.external\")"
 msgstr ""
+"-- CSSセレクターをXPathに変換\n"
+"local xpaths = luacs.to_xpaths(\"ul li, a.external\")"
 
 msgid ""
 "for _, xpath in ipairs(xpaths) do\n"

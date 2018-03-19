@@ -1,24 +1,24 @@
 ---
-title: Reference manual
+title: リファレンスマニュアル
 ---
 
-# Reference manual
+# リファレンスマニュアル
 
-This document describes about all features. [Tutorial][tutorial] focuses on easy to understand only about important features. This document focuses on completeness. If you don't read [tutorial][tutorial] yet, read tutorial before read this document.
+このドキュメントはすべての機能を説明します。[チュートリアル][tutorial]は重要な機能だけを簡単に理解できることを重視しています。このドキュメントは網羅性を重視しています。まだ[チュートリアル][tutorial]を読んでいないのであれば、このドキュメントを読む前にチュートリアルを読んでください。
 
-## Modules {#modules}
+## モジュール {#modules}
 
-LuaCS has only one public modules. It's `luacs` main module.
+LuaCSには1つだけ公開モジュールがあります。それは`luacs`メインモジュールです。
 
-  * [`luacs`][luacs]: The main module.
+  * [`luacs`][luacs]: メインモジュール。
 
-## Classes {#classes}
+## クラス {#classes}
 
-LuaCS provides the following classes:
+LuaCSは以下のクラスを提供します。
 
-  * [`luacs.Parser`][parser]: The class for parsing CSS Selectors.
+  * [`luacs.Parser`][parser]: CSSセレクターをパースするクラス。
 
-  * [`luacs.XPathConverter`][xpath-converter]: The class to convert CSS Selectors to XPaths.
+  * [`luacs.XPathConverter`][xpath-converter]: CSSセレクターをXPathに変換するクラス。
 
 [tutorial]:../tutorial/
 

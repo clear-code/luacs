@@ -2,17 +2,17 @@
 title: luacs
 ---
 
-# `luacs` module
+# `luacs`モジュール
 
-## Summary
+## 概要
 
-It's the main module.
+メインモジュールです。
 
-## Module functions
+## モジュール関数
 
 ### `to_xpaths(css_selectors_group) -> {xpath1, xpath2, ...}` {#to-xpaths}
 
-It converts CSS Selectors to one or more XPaths.
+CSSセレクターを1つ以上のXPathに変換します。
 
 例：
 

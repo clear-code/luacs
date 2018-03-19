@@ -33,7 +33,7 @@ CSSセレクターでDOMからノードを検索するには[`xmlua.Searchable.c
 
 ## 次のステップ {#next-step}
 
-これでLuaCSのすべての主な機能を学びました！それぞれの機能をより理解したい場合は、各機能の[reference manual][reference]を見てください。
+これでLuaCSのすべての主な機能を学びました！それぞれの機能をより理解したい場合は、各機能の[リファレンスマニュアル][reference]を見てください。
 
 
 [install]:../install/
