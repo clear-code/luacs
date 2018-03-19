@@ -5,16 +5,16 @@ local package_version = "1.0.0"
 package = "LuaCS"
 version = package_version .. "-0"
 description = {
-  summary = "LuaCS is a Lua library for processing CSS selector",
+  summary = "LuaCS is a Lua library for parsing CSS Selectors",
   detailed = [[
-    LuaCS provides CSS selector parser.
-    LuaCS also provides CSS selector to XPath converter.
+    LuaCS provides CSS Selectors parser.
+    LuaCS also provides CSS Selectors to XPaths converter.
   ]],
   license = "MIT",
   homepage = "https://clear-code.github.io/luacs/",
   -- Since 3.0
   -- issues_url = "https://github.com/clear-code/luacs/issues",
-  maintainer = "Horimoto Yasuhiro <horimoto@clear-code.com> and Kouhei Sutou <kou@clear-code.com>",
+  maintainer = "Kouhei Sutou <kou@clear-code.com>",
   -- Since 3.0
   -- labels = {"css"},
 }
