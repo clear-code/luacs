@@ -1,6 +1,6 @@
 # -*- ruby -*-
 
-/^xmlua\.VERSION = "(.+?)"/ =~ File.read("xmlua.lua")
+/^luacs\.VERSION = "(.+?)"/ =~ File.read("luacs.lua")
 version = $1
 
 desc "Tag for #{version}"
@@ -17,7 +17,7 @@ task :upload do
   end
 
   rockspec_version = ""
-  File.open("xmlua.rockspec") do |rockspec|
+  File.open("luacs.rockspec") do |rockspec|
     rockspec.each_line do |line|
       case line
       when /package_version = "(.+?)"/
@@ -27,10 +27,10 @@ task :upload do
       end
     end
   end
-  versioned_rockspec_filename = "xmlua-#{rockspec_version}.rockspec"
+  versioned_rockspec_filename = "luacs-#{rockspec_version}.rockspec"
 
   begin
-    cp("xmlua.rockspec", versioned_rockspec_filename)
+    cp("luacs.rockspec", versioned_rockspec_filename)
     sh("luarocks",
        "upload",
        "--api-key=#{api_key}",
@@ -48,17 +48,17 @@ namespace :version do
       raise "Specify new version as VERSION environment variable value"
     end
 
-    xmlua_lua_content = File.read("xmlua.lua").gsub(/xmlua\.VERSION = ".+?"/) do
-      "xmlua.VERSION = \"#{new_version}\""
+    luacs_lua_content = File.read("luacs.lua").gsub(/luacs\.VERSION = ".+?"/) do
+      "luacs.VERSION = \"#{new_version}\""
     end
-    File.open("xmlua.lua", "w") do |xmlua_lua|
-      xmlua_lua.print(xmlua_lua_content)
+    File.open("luacs.lua", "w") do |luacs_lua|
+      luacs_lua.print(luacs_lua_content)
     end
 
-    rockspec_content = File.read("xmlua.rockspec").gsub(/package_version = ".+?"/) do
+    rockspec_content = File.read("luacs.rockspec").gsub(/package_version = ".+?"/) do
       "package_version = \"#{new_version}\""
     end
-    File.open("xmlua.rockspec", "w") do |rockspec|
+    File.open("luacs.rockspec", "w") do |rockspec|
       rockspec.print(rockspec_content)
     end
   end
