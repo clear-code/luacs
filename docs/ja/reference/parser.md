@@ -2,18 +2,18 @@
 title: luacs.Parser
 ---
 
-# `luacs.Parser` class
+# `luacs.Parser`クラス
 
 ## 概要
 
-It's a class for parsing CSS Selectors.
+CSSセレクターをパースするクラスです。
 
 TODO
 
-## Class methods
+## クラスメソッド
 
 TODO
 
-## Instance methods
+## インスタンスメソッド
 
 TODO

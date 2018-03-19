@@ -2,25 +2,25 @@
 title: luacs.XPathConverter
 ---
 
-# `luacs.XPathConverter` class
+# `luacs.XPathConverter`クラス
 
 ## 概要
 
-It's a class for converting CSS Selectors to XPaths.
+CSSセレクターをXPathに変換するクラスです。
 
-Normally, you should use [`luacs.to_xpaths`][luacs-to-xpaths]. It's convenient.
-
-TODO
-
-## Class methods
+通常は[`luacs.to_xpaths`][luacs-to-xpaths]を使ってください。この関数の方が便利です。
 
 TODO
 
-## Instance methods
+## クラスメソッド
 
 TODO
 
-## See also
+## インスタンスメソッド
+
+TODO
+
+## 参照
 
   * [`luacs.to_xpaths`][luacs-to-xpaths]
 

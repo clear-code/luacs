@@ -14,19 +14,19 @@ msgid ""
 msgstr ""
 
 msgid "# `luacs.Parser` class"
-msgstr ""
+msgstr "# `luacs.Parser`クラス"
 
 msgid "## Summary"
-msgstr ""
+msgstr "## 概要"
 
 msgid "It's a class for parsing CSS Selectors."
-msgstr ""
+msgstr "CSSセレクターをパースするクラスです。"
 
 msgid "TODO"
 msgstr ""
 
 msgid "## Class methods"
-msgstr ""
+msgstr "## クラスメソッド"
 
 msgid "## Instance methods"
-msgstr ""
+msgstr "## インスタンスメソッド"

@@ -14,30 +14,30 @@ msgid ""
 msgstr ""
 
 msgid "# `luacs.XPathConverter` class"
-msgstr ""
+msgstr "# `luacs.XPathConverter`クラス"
 
 msgid "## Summary"
-msgstr ""
+msgstr "## 概要"
 
 msgid "It's a class for converting CSS Selectors to XPaths."
-msgstr ""
+msgstr "CSSセレクターをXPathに変換するクラスです。"
 
 msgid ""
 "Normally, you should use [`luacs.to_xpaths`][luacs-to-xpaths]. It's convenient"
 "."
-msgstr ""
+msgstr "通常は[`luacs.to_xpaths`][luacs-to-xpaths]を使ってください。この関数の方が便利です。"
 
 msgid "TODO"
 msgstr ""
 
 msgid "## Class methods"
-msgstr ""
+msgstr "## クラスメソッド"
 
 msgid "## Instance methods"
-msgstr ""
+msgstr "## インスタンスメソッド"
 
 msgid "## See also"
-msgstr ""
+msgstr "## 参照"
 
 msgid "  * [`luacs.to_xpaths`][luacs-to-xpaths]"
 msgstr ""
