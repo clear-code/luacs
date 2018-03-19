@@ -285,10 +285,9 @@ function TestXPathConverter.test_pseudo_class_only_of_type()
 end
 
 function TestXPathConverter.test_pseudo_class_only_of_type_universal()
-  luaunit.assertEquals(
-    luacs.to_xpaths("*:only-of-type"),
-    {"/descendant::*" ..
-       "[count(parent::*/*) = 1]"})
+  assert_to_xpath_error("*:only-of-type",
+                        "Failed to convert to XPath: *:only-of-type: " ..
+                          "unsupported pseudo-class")
 end
 
 function TestXPathConverter.test_pseudo_class_empty()

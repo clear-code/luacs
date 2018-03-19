@@ -231,6 +231,11 @@ function methods.on_pseudo_class_only_child(self, name)
 end
 
 function methods.on_pseudo_class_only_of_type(self, name)
+  if self.node_predicate == "" then
+    error("Failed to convert to XPath: *:" .. name .. ": " ..
+            "unsupported pseudo-class")
+  end
+
   local xpath = self.xpaths[#self.xpaths]
   xpath = xpath .. "[count(parent::*/*" .. self.node_predicate .. ") = 1]"
   self.xpaths[#self.xpaths] = xpath
