@@ -7,21 +7,21 @@ function metatable.__index(parser, key)
   return methods[key]
 end
 
-function methods.inspect(self)
+function methods:inspect()
   return
     self.data:sub(1, self.position - 1) .. "|@|" ..
     self.data:sub(self.position)
 end
 
-function methods.peek(self)
+function methods:peek()
   return self.data[self.position]
 end
 
-function methods.seek(self, position)
+function methods:seek(position)
   self.position = position
 end
 
-function methods.match(self, pattern)
+function methods:match(pattern)
   local start, last = self.data:find(pattern, self.position)
   if start == self.position then
     self.position = last + 1
@@ -31,17 +31,17 @@ function methods.match(self, pattern)
   end
 end
 
-function methods.match_whitespaces(self)
+function methods:match_whitespaces()
   return self:match("[ \t\r\n\f]+")
 end
 
 -- TODO: support non-ASCII characters
-function methods.match_ident(self)
+function methods:match_ident()
   return self:match("-?[_%a][_%a%d-]*")
 end
 
 -- TODO: support escape and so on
-function methods.match_string(self)
+function methods:match_string()
   local position = self.position
 
   local first = self.data:sub(position, position)
@@ -62,7 +62,7 @@ function methods.match_string(self)
   end
 end
 
-function methods.match_number(self)
+function methods:match_number()
   local position = self.position
 
   local number = self:match("%d+")
@@ -78,7 +78,7 @@ function methods.match_number(self)
   end
 end
 
-function methods.match_dimension(self)
+function methods:match_dimension()
   local position = self.position
 
   local number = self:match_number()
@@ -95,7 +95,7 @@ function methods.match_dimension(self)
   return self.data:sub(position, self.position - 1)
 end
 
-function methods.match_namespace_prefix(self)
+function methods:match_namespace_prefix()
   local position = self.position
 
   if self:match("|") then
@@ -114,7 +114,7 @@ function methods.match_namespace_prefix(self)
   end
 end
 
-function methods.match_hash(self)
+function methods:match_hash()
   matched = self:match("#[_%a%d-]+")
   if matched then
     return matched:sub(2)

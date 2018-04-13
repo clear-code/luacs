@@ -514,7 +514,7 @@ local function selectors_group(parser)
   on(parser, "end_selectors_group")
 end
 
-function methods.parse(self)
+function methods:parse()
   selectors_group(self)
 end
 

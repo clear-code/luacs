@@ -21,21 +21,21 @@ function metatable.__index(parser, key)
   return methods[key]
 end
 
-function methods.on_start_selector(self)
+function methods:on_start_selector()
   table.insert(self.xpaths, "")
   self.combinator = " "
 end
 
-function methods.on_start_simple_selector_sequence(self)
+function methods:on_start_simple_selector_sequence()
   self.need_node_test = true
   self.node_predicate = ""
 end
 
-function methods.on_combinator(self, combinator)
+function methods:on_combinator(combinator)
   self.combinator = combinator
 end
 
-function methods.on_type_selector(self, namespace_prefix, element_name)
+function methods:on_type_selector(namespace_prefix, element_name)
   self.need_node_test = false
 
   local xpath = self.xpaths[#self.xpaths]
@@ -77,7 +77,7 @@ function methods.on_type_selector(self, namespace_prefix, element_name)
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_universal(self, namespace_prefix, element_name)
+function methods:on_universal(namespace_prefix, element_name)
   self.need_node_test = false
 
   local xpath = self.xpaths[#self.xpaths]
@@ -108,7 +108,7 @@ function methods.on_universal(self, namespace_prefix, element_name)
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_hash(self, name)
+function methods:on_hash(name)
   local xpath = self.xpaths[#self.xpaths]
   if self.need_node_test then
     xpath = xpath .. "/descendant::*"
@@ -126,7 +126,7 @@ local function attribute_include(xpath, name, value)
     string_value(" " .. value .. " ") .. ")]"
 end
 
-function methods.on_class(self, name)
+function methods:on_class(name)
   local xpath = self.xpaths[#self.xpaths]
   if self.need_node_test then
     xpath = xpath .. "/descendant::*"
@@ -135,8 +135,7 @@ function methods.on_class(self, name)
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_attribute(self,
-                              namespace_prefix,
+function methods:on_attribute(namespace_prefix,
                               attribute_name,
                               operator,
                               value)
@@ -177,30 +176,30 @@ function methods.on_attribute(self,
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_pseudo_element(self, name)
+function methods:on_pseudo_element(name)
   error("Failed to convert to XPath: " ..
           "pseudo-element isn't supported: <" .. name .. ">")
 end
 
-function methods.on_pseudo_class_root(self, name)
+function methods:on_pseudo_class_root(name)
   local xpath = self.xpaths[#self.xpaths]
   xpath = xpath .. "[not(parent::*)]"
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_pseudo_class_first_child(self, name)
+function methods:on_pseudo_class_first_child(name)
   local xpath = self.xpaths[#self.xpaths]
   xpath = xpath .. "[count(preceding-sibling::*) = 0]"
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_pseudo_class_last_child(self, name)
+function methods:on_pseudo_class_last_child(name)
   local xpath = self.xpaths[#self.xpaths]
   xpath = xpath .. "[count(following-sibling::*) = 0]"
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_pseudo_class_first_of_type(self, name)
+function methods:on_pseudo_class_first_of_type(name)
   if self.node_predicate == "" then
     error("Failed to convert to XPath: *:" .. name .. ": " ..
             "unsupported pseudo-class")
@@ -212,7 +211,7 @@ function methods.on_pseudo_class_first_of_type(self, name)
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_pseudo_class_last_of_type(self, name)
+function methods:on_pseudo_class_last_of_type(name)
   if self.node_predicate == "" then
     error("Failed to convert to XPath: *:" .. name .. ": " ..
             "unsupported pseudo-class")
@@ -224,13 +223,13 @@ function methods.on_pseudo_class_last_of_type(self, name)
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_pseudo_class_only_child(self, name)
+function methods:on_pseudo_class_only_child(name)
   local xpath = self.xpaths[#self.xpaths]
   xpath = xpath .. "[count(parent::*/*) = 1]"
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_pseudo_class_only_of_type(self, name)
+function methods:on_pseudo_class_only_of_type(name)
   if self.node_predicate == "" then
     error("Failed to convert to XPath: *:" .. name .. ": " ..
             "unsupported pseudo-class")
@@ -241,13 +240,13 @@ function methods.on_pseudo_class_only_of_type(self, name)
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_pseudo_class_empty(self, name)
+function methods:on_pseudo_class_empty(name)
   local xpath = self.xpaths[#self.xpaths]
   xpath = xpath .. "[not(node())]"
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_pseudo_class(self, name)
+function methods:on_pseudo_class(name)
   local callback = methods["on_pseudo_class_" .. name:gsub("-", "_")]
   if not name:find("_") and callback then
     local xpath = self.xpaths[#self.xpaths]
@@ -262,7 +261,7 @@ function methods.on_pseudo_class(self, name)
   end
 end
 
-function methods.on_functional_pseudo_lang(self, name, expression)
+function methods:on_functional_pseudo_lang(name, expression)
   local xpath = self.xpaths[#self.xpaths]
 
   if #expression ~= 1 then
@@ -437,7 +436,7 @@ local function build_nth_xpath(xpath, a, b, axis, node_predicate)
   return xpath
 end
 
-function methods.on_functional_pseudo_nth_child(self, name, expression)
+function methods:on_functional_pseudo_nth_child(name, expression)
   local xpath = self.xpaths[#self.xpaths]
 
   local a, b = parse_nth_expression(name, expression)
@@ -446,7 +445,7 @@ function methods.on_functional_pseudo_nth_child(self, name, expression)
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_functional_pseudo_nth_last_child(self, name, expression)
+function methods:on_functional_pseudo_nth_last_child(name, expression)
   local xpath = self.xpaths[#self.xpaths]
 
   local a, b = parse_nth_expression(name, expression)
@@ -455,7 +454,7 @@ function methods.on_functional_pseudo_nth_last_child(self, name, expression)
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_functional_pseudo_nth_of_type(self, name, expression)
+function methods:on_functional_pseudo_nth_of_type(name, expression)
   if self.node_predicate == "" then
     error("Failed to convert to XPath: *:" .. name .. ": " ..
             "unsupported functional-pseudo")
@@ -469,7 +468,7 @@ function methods.on_functional_pseudo_nth_of_type(self, name, expression)
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_functional_pseudo_nth_last_of_type(self, name, expression)
+function methods:on_functional_pseudo_nth_last_of_type(name, expression)
   if self.node_predicate == "" then
     error("Failed to convert to XPath: *:" .. name .. ": " ..
             "unsupported functional-pseudo")
@@ -483,7 +482,7 @@ function methods.on_functional_pseudo_nth_last_of_type(self, name, expression)
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_functional_pseudo(self, name, expression)
+function methods:on_functional_pseudo(name, expression)
   local callback = methods["on_functional_pseudo_" .. name:gsub("-", "_")]
   if not name:find("_") and callback then
     local xpath = self.xpaths[#self.xpaths]
@@ -498,7 +497,7 @@ function methods.on_functional_pseudo(self, name, expression)
   end
 end
 
-function methods.on_start_negation(self)
+function methods:on_start_negation()
   local xpath = self.xpaths[#self.xpaths]
 
   if self.need_node_test then
@@ -510,7 +509,7 @@ function methods.on_start_negation(self)
   self.xpaths[#self.xpaths] = xpath
 end
 
-function methods.on_end_negation(self)
+function methods:on_end_negation()
   local xpath = self.xpaths[#self.xpaths]
 
   xpath = xpath .. ")]"
