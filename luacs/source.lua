@@ -24,8 +24,8 @@ function methods:seek(position)
 end
 
 function methods:match(pattern)
-  local start, last = self.data:find(pattern, self.position)
-  if start == self.position then
+  local start, last = self.data:find("^" .. pattern, self.position)
+  if start then
     self:seek(last + 1)
     return self.data:sub(start, last)
   else
