@@ -34,7 +34,49 @@ function methods:match(pattern)
 end
 
 function methods:match_whitespaces()
-  return self:match("[ \t\r\n\f]+")
+  local pattern = "[ \t\r\n\f]+"
+  local whitespaces = self:match(pattern)
+  while true do
+    local comment = self:match_comment()
+    if not comment then
+      break
+    end
+    local sub_whitespaces = self:match(pattern)
+    if sub_whitespaces then
+      if whitespaces then
+        whitespaces = whitespaces .. sub_whitespaces
+      else
+        whitespaces = sub_whitespaces
+      end
+    end
+  end
+  return whitespaces
+end
+
+function methods:match_comment()
+  local position = self.position
+
+  if not self:match("/%*") then
+    return nil
+  end
+
+  local content = ""
+  while true do
+    local sub_content = self:match("[^*]*%*+")
+    if not sub_content then
+      break
+    end
+
+    if self:match("/") then
+      content = content .. sub_content:sub(1, -2)
+      return content
+    else
+      content = content .. sub_content
+    end
+  end
+
+  self:seek(position)
+  return nil
 end
 
 function methods:match_hyphen()

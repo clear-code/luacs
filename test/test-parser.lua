@@ -1848,3 +1848,30 @@ function TestParser.test_universal_attribute_dash_match()
                        }
   )
 end
+
+function TestParser.test_comment_selectors_group()
+  luaunit.assertEquals(parse("ul, /* ol, */ dl"),
+                       {
+                         "start_selectors_group",
+                         "start_selector",
+                         "start_simple_selector_sequence",
+                         {
+                           event = "type_selector",
+                           namespace_prefix = nil,
+                           element_name = "ul",
+                         },
+                         "end_simple_selector_sequence",
+                         "end_selector",
+                         "start_selector",
+                         "start_simple_selector_sequence",
+                         {
+                           event = "type_selector",
+                           namespace_prefix = nil,
+                           element_name = "dl",
+                         },
+                         "end_simple_selector_sequence",
+                         "end_selector",
+                         "end_selectors_group",
+                       }
+  )
+end
