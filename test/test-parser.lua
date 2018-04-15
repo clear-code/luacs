@@ -382,6 +382,94 @@ function TestParser.test_type_selector_class()
   )
 end
 
+function TestParser.test_type_selector_class_non_ascii()
+  luaunit.assertEquals(parse("p.cクラス"),
+                       {
+                         "start_selectors_group",
+                         "start_selector",
+                         "start_simple_selector_sequence",
+                         {
+                           event = "type_selector",
+                           namespace_prefix = nil,
+                           element_name = "p",
+                         },
+                         {
+                           event = "class",
+                           name = "cクラス",
+                         },
+                         "end_simple_selector_sequence",
+                         "end_selector",
+                         "end_selectors_group",
+                       }
+  )
+end
+
+function TestParser.test_type_selector_class_escape_backslash()
+  luaunit.assertEquals(parse("p.\\\\backslash"),
+                       {
+                         "start_selectors_group",
+                         "start_selector",
+                         "start_simple_selector_sequence",
+                         {
+                           event = "type_selector",
+                           namespace_prefix = nil,
+                           element_name = "p",
+                         },
+                         {
+                           event = "class",
+                           name = "\\backslash",
+                         },
+                         "end_simple_selector_sequence",
+                         "end_selector",
+                         "end_selectors_group",
+                       }
+  )
+end
+
+function TestParser.test_type_selector_class_unicode_with_space()
+  luaunit.assertEquals(parse("p.\\3042 A"),
+                       {
+                         "start_selectors_group",
+                         "start_selector",
+                         "start_simple_selector_sequence",
+                         {
+                           event = "type_selector",
+                           namespace_prefix = nil,
+                           element_name = "p",
+                         },
+                         {
+                           event = "class",
+                           name = "あA",
+                         },
+                         "end_simple_selector_sequence",
+                         "end_selector",
+                         "end_selectors_group",
+                       }
+  )
+end
+
+function TestParser.test_type_selector_class_unicode_without_space()
+  luaunit.assertEquals(parse("p.\\003042A"),
+                       {
+                         "start_selectors_group",
+                         "start_selector",
+                         "start_simple_selector_sequence",
+                         {
+                           event = "type_selector",
+                           namespace_prefix = nil,
+                           element_name = "p",
+                         },
+                         {
+                           event = "class",
+                           name = "あA",
+                         },
+                         "end_simple_selector_sequence",
+                         "end_selector",
+                         "end_selectors_group",
+                       }
+  )
+end
+
 function TestParser.test_type_selector_attribute()
   luaunit.assertEquals(parse("p[ id ]"),
                        {

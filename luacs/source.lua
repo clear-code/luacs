@@ -1,3 +1,5 @@
+local utf8 = require("lua-utf8")
+
 local Source = {}
 
 local methods = {}
@@ -35,9 +37,86 @@ function methods:match_whitespaces()
   return self:match("[ \t\r\n\f]+")
 end
 
--- TODO: support non-ASCII characters
+function methods:match_hyphen()
+  return self:match("-")
+end
+
+
+function methods:match_name_character(is_start)
+  local position = self.position
+
+  local in_ascii
+  if is_start then
+    in_ascii = self:match("[_a-zA-Z]")
+  else
+    in_ascii = self:match("[_a-zA-Z0-9-]")
+  end
+  if in_ascii then
+    return in_ascii
+  end
+
+  local data = self.data:sub(self.position)
+  if #data > 0 then
+    local code_point = utf8.codepoint(data)
+    if code_point >= 0x80 then
+      local next_offset, next_code_point = utf8.offset(data, 1)
+      if next_offset then
+        self.position = position + next_offset - 1
+      else
+        self.position = #self.data + 1
+      end
+      return utf8.char(code_point)
+    end
+  end
+
+  self.position = position
+  local unicode_escape = self:match("\\[0-9a-zA-Z]+")
+  if unicode_escape then
+    if #unicode_escape > 7 then
+      self.position = self.position - (#unicode_escape - 7)
+      unicode_escape = unicode_escape:sub(1, 7)
+    end
+    local code_point = tonumber("0x" .. unicode_escape:sub(2))
+    if not self:match("\r\n") then
+      self:match("[ \n\r\t\f]")
+    end
+    return utf8.char(code_point)
+  end
+
+  self.postion = position
+  local escape = self:match("\\[^\n\r\f0-9a-zA-Z]")
+  if escape then
+    return escape:sub(2)
+  end
+
+  return nil
+end
+
 function methods:match_ident()
-  return self:match("-?[_%a][_%a%d-]*")
+  local position = self.position
+  local ident = ""
+
+  local hyphen = self:match_hyphen()
+  if hyphen then
+    ident = ident .. hyhpen
+  end
+
+  local name_start = self:match_name_character(true)
+  if not name_start then
+    self.position = position
+    return nil
+  end
+  ident = ident .. name_start
+
+  while true do
+    local name_character = self:match_name_character(false)
+    if not name_character then
+      break
+    end
+    ident = ident .. name_character
+  end
+
+  return ident
 end
 
 -- TODO: support escape and so on

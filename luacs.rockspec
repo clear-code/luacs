@@ -18,6 +18,9 @@ description = {
   -- Since 3.0
   -- labels = {"css"},
 }
+dependencies = {
+  "luautf8",
+}
 source = {
   url = "https://github.com/clear-code/luacs/archive/" .. package_version .. ".zip",
   dir = "luacs-" .. package_version,
