@@ -26,7 +26,7 @@ end
 function methods:match(pattern)
   local start, last = self.data:find(pattern, self.position)
   if start == self.position then
-    self.position = last + 1
+    self:seek(last + 1)
     return self.data:sub(start, last)
   else
     return nil
@@ -61,19 +61,19 @@ function methods:match_name_character(is_start)
     if code_point >= 0x80 then
       local next_offset, next_code_point = utf8.offset(data, 1)
       if next_offset then
-        self.position = position + next_offset - 1
+        self:seek(position + next_offset - 1)
       else
-        self.position = #self.data + 1
+        self:seek(#self.data + 1)
       end
       return utf8.char(code_point)
     end
   end
 
-  self.position = position
+  self:seek(position)
   local unicode_escape = self:match("\\[0-9a-zA-Z]+")
   if unicode_escape then
     if #unicode_escape > 7 then
-      self.position = self.position - (#unicode_escape - 7)
+      self:seek(self.position - (#unicode_escape - 7))
       unicode_escape = unicode_escape:sub(1, 7)
     end
     local code_point = tonumber("0x" .. unicode_escape:sub(2))
@@ -103,7 +103,7 @@ function methods:match_ident()
 
   local name_start = self:match_name_character(true)
   if not name_start then
-    self.position = position
+    self:seek(position)
     return nil
   end
   ident = ident .. name_start
@@ -127,14 +127,14 @@ function methods:match_string()
   local delimiter
   if first == "\"" or first == "'" then
     delimiter = first
-    self.position = position + 1
+    self:seek(position + 1)
   else
     return nil
   end
 
   local data_with_delimiter = self:match("[^" .. delimiter .. "]*" .. delimiter)
   if data_with_delimiter then
-    return data_with_delimiter:sub(0, -2)
+    return data_with_delimiter:sub(1, -2)
   else
     self:seek(position)
     return nil
