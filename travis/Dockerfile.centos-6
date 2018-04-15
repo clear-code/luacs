@@ -12,7 +12,9 @@ RUN \
     m4 \
     unzip
 RUN \
-  luarocks install luaunit
+  luarocks install \
+    luautf8 \
+    luaunit
 
 RUN \
   useradd --user-group --create-home luacs

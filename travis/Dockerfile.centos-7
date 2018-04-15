@@ -12,7 +12,9 @@ RUN \
     make \
     m4
 RUN \
-  luarocks install luaunit
+  luarocks install \
+    luautf8 \
+    luaunit
 
 RUN \
   systemd-machine-id-setup
