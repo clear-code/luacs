@@ -5,6 +5,7 @@ RUN \
 RUN \
   yum install -y \
     gcc \
+    lua-devel \
     luajit \
     luajit-devel \
     luarocks \
@@ -13,6 +14,8 @@ RUN \
     unzip
 RUN \
   luarocks install luautf8 && \
+  mv /usr/lib/lua/5.1/* \
+     /usr/lib64/lua/5.1/ && \
   luarocks install luaunit
 
 RUN \

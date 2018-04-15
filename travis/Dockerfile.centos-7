@@ -6,6 +6,7 @@ RUN \
   yum install -y  \
     gcc \
     libxml2 \
+    lua-devel \
     luajit \
     luajit-devel \
     luarocks \
