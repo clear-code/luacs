@@ -53,29 +53,35 @@ function methods:match_whitespaces()
   return whitespaces
 end
 
-function methods:match_comment()
-  local position = self.position
-
-  if not self:match("/%*") then
+function methods:match_comment_c_style()
+  local comment = self:match("/%*.-%*/")
+  if comment then
+    return comment:sub(3, -3)
+  else
     return nil
   end
+end
 
-  local content = ""
-  while true do
-    local sub_content = self:match("[^*]*%*+")
-    if not sub_content then
-      break
-    end
+function methods:match_comment_sgml_style()
+  local comment = self:match("<!%-%-.-%-%->")
+  if comment then
+    return comment:sub(5, -4)
+  else
+    return nil
+  end
+end
 
-    if self:match("/") then
-      content = content .. sub_content:sub(1, -2)
-      return content
-    else
-      content = content .. sub_content
-    end
+function methods:match_comment()
+  local content = self:match_comment_c_style()
+  if content then
+    return content
   end
 
-  self:seek(position)
+  content = self:match_comment_sgml_style()
+  if content then
+    return content
+  end
+
   return nil
 end
 
