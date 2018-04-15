@@ -25,7 +25,8 @@ matrix:
         - make build
         - sudo make install
         - cd ..
-        - sudo luarocks install luautf8 luaunit
+        - sudo luarocks install luautf8
+        - sudo luarocks install luaunit
       script:
         - test/run-test.lua
 
