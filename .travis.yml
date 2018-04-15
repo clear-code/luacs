@@ -17,7 +17,7 @@ matrix:
     - os: osx
       env: LUAROCKS_VERSION=2.4.3
       install:
-        - brew update && brew install luajit libxml2
+        - brew update && brew install luajit
         - curl -O http://luarocks.github.io/luarocks/releases/luarocks-${LUAROCKS_VERSION}.tar.gz
         - tar xf luarocks-${LUAROCKS_VERSION}.tar.gz
         - cd luarocks-${LUAROCKS_VERSION}
@@ -25,10 +25,7 @@ matrix:
         - make build
         - sudo make install
         - cd ..
-        - sudo luarocks install cqueues
-            CRYPTO_DIR=$(brew --prefix openssl)
-            OPENSSL_DIR=$(brew --prefix openssl)
-        - sudo luarocks install luaunit
+        - sudo luarocks install luautf8 luaunit
       script:
         - test/run-test.lua
 
