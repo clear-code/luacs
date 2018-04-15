@@ -41,35 +41,29 @@ function methods:match_hyphen()
   return self:match("-")
 end
 
+function methods:match_non_ascii()
+  local data = self.data:sub(self.position)
+  if #data == 0 then
+    return nil
+  end
 
-function methods:match_name_character(is_start)
+  local code_point = utf8.codepoint(data)
+  if code_point < 0x80 then
+    return nil
+  end
+
+  local next_offset, next_code_point = utf8.offset(data, 1)
+  if next_offset then
+    self:seek(self.position + next_offset - 1)
+  else
+    self:seek(#self.data + 1)
+  end
+  return utf8.char(code_point)
+end
+
+function methods:match_escape()
   local position = self.position
 
-  local in_ascii
-  if is_start then
-    in_ascii = self:match("[_a-zA-Z]")
-  else
-    in_ascii = self:match("[_a-zA-Z0-9-]")
-  end
-  if in_ascii then
-    return in_ascii
-  end
-
-  local data = self.data:sub(self.position)
-  if #data > 0 then
-    local code_point = utf8.codepoint(data)
-    if code_point >= 0x80 then
-      local next_offset, next_code_point = utf8.offset(data, 1)
-      if next_offset then
-        self:seek(position + next_offset - 1)
-      else
-        self:seek(#self.data + 1)
-      end
-      return utf8.char(code_point)
-    end
-  end
-
-  self:seek(position)
   local unicode_escape = self:match("\\[0-9a-zA-Z]+")
   if unicode_escape then
     if #unicode_escape > 7 then
@@ -83,10 +77,34 @@ function methods:match_name_character(is_start)
     return utf8.char(code_point)
   end
 
-  self.postion = position
+  self:seek(position)
   local escape = self:match("\\[^\n\r\f0-9a-zA-Z]")
   if escape then
     return escape:sub(2)
+  end
+
+  return nil
+end
+
+function methods:match_name_character(is_start)
+  local in_ascii
+  if is_start then
+    in_ascii = self:match("[_a-zA-Z]")
+  else
+    in_ascii = self:match("[_a-zA-Z0-9-]")
+  end
+  if in_ascii then
+    return in_ascii
+  end
+
+  local non_ascii = self:match_non_ascii()
+  if non_ascii then
+    return non_ascii
+  end
+
+  local escaped = self:match_escape()
+  if escaped then
+    return escaped
   end
 
   return nil
@@ -119,25 +137,54 @@ function methods:match_ident()
   return ident
 end
 
--- TODO: support escape and so on
+function methods:match_string_character()
+  if self:match("\\\r\n") then
+    return ""
+  end
+
+  if self:match("\\[\n\r\f]") then
+    return ""
+  end
+
+  local non_ascii = self:match_non_ascii()
+  if non_ascii then
+    return non_ascii
+  end
+
+  local escaped = self:match_escape()
+  if escaped then
+    return escaped
+  end
+
+  local normal_character = self:match("[^\n\r\f\\]")
+  if normal_character then
+    return normal_character
+  end
+
+  return nil
+end
+
 function methods:match_string()
   local position = self.position
 
-  local first = self.data:sub(position, position)
-  local delimiter
-  if first == "\"" or first == "'" then
-    delimiter = first
-    self:seek(position + 1)
-  else
+  local delimiter = self:match("[\"']")
+  if not delimiter then
     return nil
   end
 
-  local data_with_delimiter = self:match("[^" .. delimiter .. "]*" .. delimiter)
-  if data_with_delimiter then
-    return data_with_delimiter:sub(1, -2)
-  else
-    self:seek(position)
-    return nil
+  local content = ""
+  while true do
+    if self:match(delimiter) then
+      return content
+    end
+
+    local character = self:match_string_character()
+    if character then
+      content = content .. character
+    else
+      self:seek(position)
+      return nil
+    end
   end
 end
 

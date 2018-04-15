@@ -520,6 +520,131 @@ function TestParser.test_type_selector_attribute_namespace_prefix()
   )
 end
 
+function TestParser.test_type_selector_attribute_string_backslash_newline()
+  luaunit.assertEquals(parse("a[title=\"a\\\nb\"]"),
+                       {
+                         "start_selectors_group",
+                         "start_selector",
+                         "start_simple_selector_sequence",
+                         {
+                           event = "type_selector",
+                           namespace_prefix = nil,
+                           element_name = "a",
+                         },
+                         {
+                           event = "attribute",
+                           namespace_prefix = nil,
+                           name = "title",
+                           operator = "=",
+                           value = "ab",
+                         },
+                         "end_simple_selector_sequence",
+                         "end_selector",
+                         "end_selectors_group",
+                       }
+  )
+end
+
+function TestParser.test_type_selector_attribute_string_non_ascii()
+  luaunit.assertEquals(parse("a[title=\"タイトル\"]"),
+                       {
+                         "start_selectors_group",
+                         "start_selector",
+                         "start_simple_selector_sequence",
+                         {
+                           event = "type_selector",
+                           namespace_prefix = nil,
+                           element_name = "a",
+                         },
+                         {
+                           event = "attribute",
+                           namespace_prefix = nil,
+                           name = "title",
+                           operator = "=",
+                           value = "タイトル",
+                         },
+                         "end_simple_selector_sequence",
+                         "end_selector",
+                         "end_selectors_group",
+                       }
+  )
+end
+
+function TestParser.test_type_selector_attribute_string_escape_backslash()
+  luaunit.assertEquals(parse("a[title=\"\\\\backslash\"]"),
+                       {
+                         "start_selectors_group",
+                         "start_selector",
+                         "start_simple_selector_sequence",
+                         {
+                           event = "type_selector",
+                           namespace_prefix = nil,
+                           element_name = "a",
+                         },
+                         {
+                           event = "attribute",
+                           namespace_prefix = nil,
+                           name = "title",
+                           operator = "=",
+                           value = "\\backslash",
+                         },
+                         "end_simple_selector_sequence",
+                         "end_selector",
+                         "end_selectors_group",
+                       }
+  )
+end
+
+function TestParser.test_type_selector_attribute_string_unicode_with_space()
+  luaunit.assertEquals(parse("a[title=\"\\3042 A\"]"),
+                       {
+                         "start_selectors_group",
+                         "start_selector",
+                         "start_simple_selector_sequence",
+                         {
+                           event = "type_selector",
+                           namespace_prefix = nil,
+                           element_name = "a",
+                         },
+                         {
+                           event = "attribute",
+                           namespace_prefix = nil,
+                           name = "title",
+                           operator = "=",
+                           value = "あA",
+                         },
+                         "end_simple_selector_sequence",
+                         "end_selector",
+                         "end_selectors_group",
+                       }
+  )
+end
+
+function TestParser.test_type_selector_attribute_string_unicode_without_space()
+  luaunit.assertEquals(parse("a[title=\"\\003042A\"]"),
+                       {
+                         "start_selectors_group",
+                         "start_selector",
+                         "start_simple_selector_sequence",
+                         {
+                           event = "type_selector",
+                           namespace_prefix = nil,
+                           element_name = "a",
+                         },
+                         {
+                           event = "attribute",
+                           namespace_prefix = nil,
+                           name = "title",
+                           operator = "=",
+                           value = "あA",
+                         },
+                         "end_simple_selector_sequence",
+                         "end_selector",
+                         "end_selectors_group",
+                       }
+  )
+end
+
 function TestParser.test_type_selector_attribute_prefix_match()
   luaunit.assertEquals(parse("a[href ^= \"https://\"]"),
                        {
