@@ -1,6 +1,6 @@
 local luacs = {}
 
-luacs.VERSION = "1.0.2"
+luacs.VERSION = "1.0.3"
 
 luacs.Parser = require("luacs.parser")
 luacs.XPathConverter = require("luacs.xpath-converter")

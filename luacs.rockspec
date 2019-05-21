@@ -1,6 +1,6 @@
 -- -*- lua -*-
 
-local package_version = "1.0.2"
+local package_version = "1.0.3"
 
 package = "LuaCS"
 version = package_version .. "-0"
