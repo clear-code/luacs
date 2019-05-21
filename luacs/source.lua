@@ -289,7 +289,7 @@ function methods:match_namespace_prefix()
 end
 
 function methods:match_hash()
-  matched = self:match("#[_%a%d-]+")
+  local matched = self:match("#[_%a%d-]+")
   if matched then
     return matched:sub(2)
   else
