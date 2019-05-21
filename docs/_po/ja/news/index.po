@@ -16,6 +16,38 @@ msgstr ""
 msgid "# News"
 msgstr ""
 
+msgid "## 1.0.2: 2019-05-21 {#version-1-0-2}"
+msgstr ""
+
+msgid "### Fixes"
+msgstr ""
+
+msgid ""
+"  * Fixed a bug that `local` is missing for local variable.\n"
+"    [GitHub#1][Patch by Allen Shaw]"
+msgstr ""
+
+msgid "### Thanks"
+msgstr ""
+
+msgid "  * Allen Shaw"
+msgstr ""
+
+msgid "## 1.0.1: 2018-04-15 {#version-1-0-1}"
+msgstr ""
+
+msgid "### Improvements"
+msgstr ""
+
+msgid "  * Added UTF-8 support."
+msgstr ""
+
+msgid "  * Added escape support."
+msgstr ""
+
+msgid "  * Added comment support."
+msgstr ""
+
 msgid "## 1.0.0: 2018-03-19 {#version-1-0-0}"
 msgstr ""
 
